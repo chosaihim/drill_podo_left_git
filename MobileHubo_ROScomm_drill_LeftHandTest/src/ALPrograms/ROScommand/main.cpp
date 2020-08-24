@@ -1203,23 +1203,25 @@ void ToolTask_Supervisor()
 //            WBmotion->addLHPosInfo(LHpos[0], LHpos[1], LHpos[2], drill_in.leftPush_time);
 
             double pushTime_count = drill_in.leftPush_time * 200;
-            double x = drill_in.leftApproach_Handx;
-            double z = drill_in.leftApproach_Handz;
-            double r = 0.0105;
+            double x0 = drill_in.leftApproach_Handx;
+            double z0 = drill_in.leftApproach_Handz;
+            double x = 0, z =0;
+            double r = 0.10;
             double th   = 0;
-            double d_th = (90 * D2R)/(pushTime_count);
+            double d_th = (95 * D2R)/(pushTime_count);
 
             while(pushTime_count--)
             {
                 //test
                 th = th + d_th;
-                x  = x + r * sin(d_th);
-                z  = z + (r - r * cos(d_th));
+                x  = x0 + r * sin(th);
+                z  = z0 + (r - r * cos(th));
 
                 WBmotion->addLHPosInfo(x, LHpos[1], z, 0.005);
 
 //                cout << "pushTime_count = " << pushTime_count << endl;
             }
+            cout << "x = " << x << ", z = " << z << endl;
 
 //            SetOriHand(LHori,-115.0,0.0);
 //            WBmotion->addLHOriInfo(LHori, drill_in.leftHandup_time);
