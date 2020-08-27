@@ -317,7 +317,40 @@ typedef struct{
 
 
     //LEFT HAND
-    //TEMP VALUES FOR MINOR DRILLING TEST
+    //Circular motion from up to Down
+    //LEFT_HANDUP
+    double leftHandup_Handx     = 0.40;
+    double leftHandup_Handy     = 0.246403;
+    double leftHandup_Handz     = 0.60-0.01-0.05-0.03;
+    double leftHandup_time      = 4.0;
+
+    //LEFT_APPROACH
+    double leftApproach_Handx   = leftHandup_Handx + 0.18;
+    double leftApproach_Handy   = leftHandup_Handy;
+    double leftApproach_Handz   = leftHandup_Handz+0.05+0.03;
+    double leftApproach_time    = 2.0;
+
+
+    //LEFT_PUSH
+    double leftPush_Handx       = leftApproach_Handx+0.1;//0.095;//0.065;
+    double leftPush_Handy       = leftApproach_Handy;
+    double leftPush_Handz       = leftApproach_Handz+0.15;//0.095;//0.065;
+    double leftPush_time        = 30.0;
+
+    //LEFT_PULL
+    double leftPull_Handx       = leftApproach_Handx;
+    double leftPull_Handy       = leftApproach_Handy;
+    double leftPull_Handz       = leftApproach_Handz;
+    double leftPull_time        = 10.0;
+
+
+    //LEFT_HANDBACK
+    double leftHandBack_Handx   = 0.40;
+    double leftHandBack_Handy   = 0.246403;
+    double leftHandBack_Handz   = 0.60-0.13;//+0.03;
+    double leftHandBack_time    = 4.0;
+
+    /*
     //LEFT_HANDUP
     double leftHandup_Handx     = 0.55 -0.05;//TEST//0.55;
     double leftHandup_Handy     = 0.246403;
@@ -338,9 +371,9 @@ typedef struct{
     double leftPush_time        = 30.0;
 
     //LEFT_PULL
-    double leftPull_Handx       = leftPush_Handx-0.1;
-    double leftPull_Handy       = leftPush_Handy;
-    double leftPull_Handz       = leftPush_Handz-0.15;
+    double leftPull_Handx       = leftApproach_Handx;
+    double leftPull_Handy       = leftApproach_Handy;
+    double leftPull_Handz       = leftApproach_Handz;
     double leftPull_time        = 10.0;
 
 
@@ -349,8 +382,9 @@ typedef struct{
     double leftHandBack_Handy   = 0.246403;
     double leftHandBack_Handz   = 0.60-0.13;//+0.03;
     double leftHandBack_time    = 4.0;
+    */
 
-
+    /*
 //    //LEFT_HANDUP
 //    double leftHandup_Handx     = 0.55;
 //    double leftHandup_Handy     = 0.246403;
@@ -380,7 +414,7 @@ typedef struct{
 //    double leftHandBack_Handy   = 0.246403;
 //    double leftHandBack_Handz   = 0.73;
 //    double leftHandBack_time    = 4.0;
-
+    */
 
 
 }drill_motion;
