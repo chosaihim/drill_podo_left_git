@@ -488,9 +488,11 @@ int main(int argc, char *argv[])
                     joint->SetAllMotionOwner();
                     FLAG_Gripper = true;
                     MODE_Gripper = sharedCMD->COMMAND[PODO_NO].USER_PARA_INT[0];
-                    SIDE_Gripper = GRIPPER_LEFT;//sharedCMD->COMMAND[PODO_NO].USER_PARA_INT[1];
+                    SIDE_Gripper = sharedCMD->COMMAND[PODO_NO].USER_PARA_INT[1];
+//                    SIDE_Gripper = GRIPPER_RIGHT;//sharedCMD->COMMAND[PODO_NO].USER_PARA_INT[1];
                     if(SIDE_Gripper == GRIPPER_RIGHT)
                     {
+                        MODE_LGripper = GRIPPER_STOP;
                         MODE_RGripper = MODE_Gripper;
                     }else if(SIDE_Gripper == GRIPPER_LEFT)
                     {
@@ -598,6 +600,8 @@ int main(int argc, char *argv[])
                 WB_FLAG = true;
 
                 Mode_TOOL = sharedCMD->COMMAND[PODO_NO].USER_PARA_INT[0];
+
+                cout << "DRILL COMMAND" << endl;
 
                 if(Mode_TOOL == DRILL_HOLD || Mode_TOOL == DRILL_DRILL || Mode_TOOL == DRILL_PUT)
                 {
@@ -796,6 +800,7 @@ void JOY_TH()
 
 
 //*******************************************************************
+//****TASK SUPERVISOR()****
 void ToolTask_Supervisor()
 {
     switch(Mode_TOOL)
@@ -1296,6 +1301,269 @@ void ToolTask_Supervisor()
 
             break;
         }
+/*      //RIGHT HAND YAW 0
+        case RIGHT_HANDUP:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_HANDUP";
+
+            RHpos[0] = drill_in.Handup_Handx;
+            RHpos[1] = drill_in.Handup_Handy;
+            RHpos[2] = drill_in.Handup_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Handup_time);
+
+            WBmotion->addLElbPosInfo(5.,drill_in.Handup_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_APPROACH:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_APPROACH";
+
+            RHpos[0] = drill_in.Approach_Handx;
+            RHpos[1] = drill_in.Approach_Handy;
+            RHpos[2] = drill_in.Approach_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Approach_time);
+
+            SetOriHand(RHori,-90.0,0.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_PUSH:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_PUSH";
+
+            SetOriHand(RHori,-90.0,0.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Push_time);
+
+
+            //variables
+            //Time
+            double pushTime_count = drill_in.Push_time * 200;
+
+            //angle
+            double th_start = (180 - 15) * D2R;
+            double th_end   = (180 + 80) * D2R;
+            double th       = th_start;
+            double d_th     = ((th_end - th_start))/(pushTime_count);
+
+            //xz plane
+            double x  = 0;
+            double z  = 0;
+            double r  = 0.10;
+            double x0 = drill_in.Approach_Handx - r * cos(th);  //0.68;
+            double z0 = drill_in.Approach_Handz - r * sin(th);  //0.57;
+
+            while(pushTime_count--)
+            {
+                //start from bottom
+                th = th + d_th;
+                x  = x0 + r * cos(th);
+                z  = z0 + r * sin(th);
+
+                WBmotion->addRHPosInfo(x, RHpos[1], z, 0.005);
+            }
+
+            cout << "(x,z) = (" << x << ", " << z << ")" << endl;
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_PULL:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_PULL";
+
+            RHpos[0] = drill_in.Pull_Handx;
+            RHpos[1] = drill_in.Pull_Handy;
+            RHpos[2] = drill_in.Pull_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Pull_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_RELEASE:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_RELEASE";
+
+            RHpos[0] = drill_in.HandBack_Handx;
+            RHpos[1] = drill_in.HandBack_Handy;
+            RHpos[2] = drill_in.HandBack_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.HandBack_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+*/
+        case RIGHT_HANDUP:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_HANDUP";
+
+            RHpos[0] = drill_in.Handup_Handx;
+            RHpos[1] = drill_in.Handup_Handy;
+            RHpos[2] = drill_in.Handup_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Handup_time);
+
+            //mode1
+            SetOriHand_YP(RHori,-90.0,0.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Handup_time);
+
+            //mode2
+//            SetOriHand(RHori,-90.0,90.0);
+//            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_APPROACH:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_APPROACH";
+
+            RHpos[0] = drill_in.Approach_Handx;
+            RHpos[1] = drill_in.Approach_Handy;
+            RHpos[2] = drill_in.Approach_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Approach_time);
+
+
+            //mode1
+//            SetOriHand(RHori,-90.0,0.0);
+            SetOriHand_YP(RHori,-90.0,90.0);
+//            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+
+            //mode2
+//            SetOriHand(RHori,-90.0,90.0);
+//            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+
+
+//            SetOriHand(RHori,-90.0,0.0);
+//            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+
+//            SetOriHand_YP(RHori,-180.0,-90.0);
+//            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_PUSH:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_PUSH";
+
+
+            RHpos[0] = drill_in.Push_Handx;
+            RHpos[1] = drill_in.Push_Handy;
+            RHpos[2] = drill_in.Push_Handz;
+
+//            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Push_time);
+
+//            SetOriHand(RHori,-90.0,0.0);
+            SetOriHand_YP(RHori,-90.0,100.0);
+//            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Push_time);
+
+
+            //variables
+            //Time
+            double pushTime_count = drill_in.Push_time * 200;
+
+            //angle
+            double th_start = (180 - 15) * D2R;
+            double th_end   = (180 + 80) * D2R; //(180 + 80) * D2R;
+            double th       = th_start;
+            double d_th     = ((th_end - th_start))/(pushTime_count);
+
+            //xz plane
+            double x  = 0;
+            double z  = 0;
+            double r  = 0.20;
+            double x0 = drill_in.Approach_Handx - r * cos(th);  //0.68;
+            double z0 = drill_in.Approach_Handz - r * sin(th);  //0.57;
+
+            double hand_yaw = 90;
+            double d_hYaw   = 35 / pushTime_count;
+
+            while(pushTime_count--)
+            {
+                //start from bottom
+                th = th + d_th;
+                x  = x0 + r * cos(th);
+                z  = z0 + r * sin(th);
+
+                WBmotion->addRHPosInfo(x, RHpos[1], z, 0.005);
+
+//                hand_yaw -= d_hYaw;
+//                SetOriHand_PYP(RHori,-90.0,hand_yaw,-20.0);
+            }
+
+            cout << "(x,z) = (" << x << ", " << z << ")" << endl;
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_PULL:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_PULL";
+
+            RHpos[0] = drill_in.Pull_Handx;
+            RHpos[1] = drill_in.Pull_Handy;
+            RHpos[2] = drill_in.Pull_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Pull_time);
+
+            SetOriHand(RHori,-90.0,0.0);
+            SetOriHand_YP(RHori,-90.0,90.0);
+//            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Pull_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case RIGHT_RELEASE:
+        {
+            FILE_LOG(logSUCCESS) << "RIGHT_RELEASE";
+
+            RHpos[0] = drill_in.HandBack_Handx;
+            RHpos[1] = drill_in.HandBack_Handy;
+            RHpos[2] = drill_in.HandBack_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.HandBack_time);
+
+            Mode_TOOL = DRILL_NOTHING;
+
+            break;
+        }
+        case ANGLE_TEST:
+        {
+            FILE_LOG(logSUCCESS) << ">>> ANGLE_TEST" ;
+
+            sharedCMD->CommandAccept[PODO_NO] = true;
+
+            usleep(500*1000);
+            joint->RefreshToCurrentReference();
+            joint->SetAllMotionOwner();
+            WristAngle();
+
+
+//            //mode1
+//            SetOriHand_YP(RHori,-140.0,0.0);
+//            WBmotion->addRHOriInfo(RHori, drill_in.Handup_time);
+        }
+
         case DRILL_NOTHING:
         {
             Mode_TOOL = DRILL_NOTHING;
@@ -3003,13 +3271,13 @@ void GripperTH()
             velocityRGripper = 30;
 
         static int DoneR, DoneL = true;
-        static int CMDprint = false;
+//        static int CMDprint = false;
 
-        if(CMDprint == false)
-        {
-            printf("CMD = %d\n",MODE_RGripper);
-            CMDprint = true;
-        }
+//        if(CMDprint == false)
+//        {
+//            printf("CMD = %d\n",MODE_RGripper);
+//            CMDprint = true;
+//        }
 
 
         switch(MODE_RGripper)
@@ -3029,7 +3297,7 @@ void GripperTH()
                     FILE_LOG(logINFO) << "Right Gripper open stop (time over)";
                     MODE_RGripper = GRIPPER_STOP;
                     gripper_cnt = 0;
-                    CMDprint = false;
+//                    CMDprint = false;
                     break;
                 }
                 if(EncoderRHAND < LIMIT_Gripper)
@@ -3037,10 +3305,54 @@ void GripperTH()
                     FILE_LOG(logSUCCESS) << "Right Gripper open done";
                     MODE_RGripper = GRIPPER_STOP;
                     gripper_cnt = 0;
-                    CMDprint = false;
+//                    CMDprint = false;
                     break;
                 }
                 joint->SetJointRefAngle(RHAND, -velocityRGripper);
+                gripper_cnt++;
+                break;
+            }
+            case GUI_GRIPPER_OPEN_HALF:
+            {
+                static int gripper_cnt = 0;
+                DoneR = false;
+                if(gripper_cnt > MAX_GRIPPER_CNT)
+                {
+                    FILE_LOG(logINFO) << "Right Gripper open stop (time over)";
+                    MODE_RGripper = GRIPPER_STOP;
+                    gripper_cnt = 0;
+                    break;
+                }
+                if(EncoderRHAND < LIMIT_Gripper)
+                {//open done
+                    FILE_LOG(logSUCCESS) << "Right Gripper open done";
+                    MODE_RGripper = GRIPPER_STOP;
+                    gripper_cnt = 0;
+                    break;
+                }
+                joint->SetJointRefAngle(RHAND, -velocityRGripper);
+                gripper_cnt++;
+                break;
+            }
+            case GUI_GRIPPER_CLOSE_QUATER:
+            {
+                static int gripper_cnt = 0;
+                DoneR = false;
+                if(gripper_cnt > MAX_GRIPPER_CNT)
+                {
+                    FILE_LOG(logINFO) << "Right Gripper close stop (time over)";
+                    MODE_RGripper = GRIPPER_STOP;
+                    gripper_cnt = 0;
+                    break;
+                }
+                if(EncoderRHAND > LIMIT_Gripper)
+                {//grasp done
+                    FILE_LOG(logSUCCESS) << "Right Gripper grasp done";
+                    MODE_RGripper = GRIPPER_STOP;
+                    gripper_cnt = 0;
+                    break;
+                }
+                joint->SetJointRefAngle(RHAND, velocityRGripper);
                 gripper_cnt++;
                 break;
             }
@@ -3299,7 +3611,7 @@ void CalculateLIMITGripper()
         }
         else if(MODE_Gripper == GRIPPER_CLOSE_QUATER)
         {
-            LIMIT_Gripper = -400.;
+            LIMIT_Gripper = -900.;//-400.;
         }
         else
         {
@@ -3307,7 +3619,7 @@ void CalculateLIMITGripper()
         }
 
     }
-    printf("Desired_Distance : %f\nDesired_Encoder : %f\n",DESIRED_Gripper,LIMIT_Gripper);
+//    printf("Desired_Distance : %f\nDesired_Encoder : %f\n",DESIRED_Gripper,LIMIT_Gripper);
 
 }
 
@@ -3594,6 +3906,18 @@ void GotoWalkReadyPos(){
     joint->SetMoveJoint(LHAND,   0.0, postime, MOVE_ABSOLUTE);
 }
 
+void WristAngle(){
+    double postime = 3000.0;
+
+    WB_FLAG = false;
+
+    joint->SetMoveJoint(RWP, -5.0, postime, MOVE_ABSOLUTE);
+
+    joint->SetMoveJoint(RWY2,    90.0, postime, MOVE_ABSOLUTE);
+//    joint->SetMoveJoint(RHAND,   0.0, postime, MOVE_ABSOLUTE);
+
+}
+
 void SetOriHand(doubles &target, double _pitch, double _yaw)
 {
     quat pelori = quat(vec3(0,0,1), _yaw*D2R)*quat(vec3(0,1,0), _pitch*D2R);
@@ -3612,6 +3936,23 @@ void SetOriHand_YP(doubles &target, double _pitch, double _yaw) //_YawPitch
     }
 }
 
+void SetOriHand_PYP(doubles &target, double _pitch, double _yaw, double _pitch2) //_pitchYawPitch
+{
+    quat pelori = quat(vec3(0,1,0), _pitch*D2R)*quat(vec3(0,0,1), _yaw*D2R)*quat(vec3(0,1,0), _pitch2*D2R);
+    for(int i=0;i<4;i++)
+    {
+        target[i] = pelori[i];
+    }
+}
+
+void SetOriHand_RPY(doubles &target, double _roll, double _pitch, double _yaw) //_pitchYawPitch
+{
+    quat pelori = quat(vec3(1,0,0), _roll*D2R)*quat(vec3(0,1,0), _pitch*D2R)*quat(vec3(0,0,1), _yaw*D2R);
+    for(int i=0;i<4;i++)
+    {
+        target[i] = pelori[i];
+    }
+}
 
 //JOYSTICK
 void ResetJOY()

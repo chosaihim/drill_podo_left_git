@@ -142,8 +142,10 @@ int IsReadyTrajectory200Hz();
 // GUI Function //
 void GotoHomePos();
 void GotoWalkReadyPos();
+void WristAngle();
 void SetOriHand(doubles &target, double _pitch, double _yaw);
 void SetOriHand_YP(doubles &target, double _pitch, double _yaw);
+void SetOriHand_PYP(doubles &target, double _pitch, double _yaw, double _pitch2);
 
 // TOOL motion //
 void SetWaitTime(int mode, double time);
@@ -316,7 +318,109 @@ typedef struct{
     double put_time         =  2.0;
 
 
+    //RIGHT HAND
+    //Different angle; Circular motion from up to Down
+    //RIGHT_HANDUP
+    double Handup_Handx     = 0.50;//0.40+0.05;
+    double Handup_Handy     = -0.246403;
+    double Handup_Handz     = 0.65;//0.51;
+    double Handup_time      = 4.0;
+
+    //RIGHT_APPROACH
+    double Approach_Handx   = 0.55;//63;//Handup_Handx + 0.03;
+    double Approach_Handy   = Handup_Handy;
+    double Approach_Handz   = 0.60+0.06;//Handup_Handz + 0.08 +0.01;
+    double Approach_time    = 2.0;
+
+
+    //RIGHT_PUSH
+    double Push_Handx       = Approach_Handx +0.08;// + 0.1;
+    double Push_Handy       = Approach_Handy;
+    double Push_Handz       = Approach_Handz - 0.20;
+    double Push_time        = 10.0; //30.0;
+
+    //RIGHT_PULL
+    double Pull_Handx       = Approach_Handx;
+    double Pull_Handy       = Approach_Handy;
+    double Pull_Handz       = Approach_Handz;
+    double Pull_time        = 10.0;
+
+
+    //RIGHT_HANDBACK
+    double HandBack_Handx   = 0.40;
+    double HandBack_Handy   = -0.246403;
+    double HandBack_Handz   = 0.67;//0.60-0.13;//+0.03;
+    double HandBack_time    = 4.0;
+    /*
+    //Circular motion from up to Down
+    //RIGHT_HANDUP
+    double Handup_Handx     = 0.40;
+    double Handup_Handy     = -0.246403;
+    double Handup_Handz     = 0.51;
+    double Handup_time      = 4.0;
+
+    //RIGHT_APPROACH
+    double Approach_Handx   = Handup_Handx + 0.18;
+    double Approach_Handy   = Handup_Handy;
+    double Approach_Handz   = Handup_Handz + 0.08;
+    double Approach_time    = 2.0;
+
+
+    //RIGHT_PUSH
+    double Push_Handx       = Approach_Handx + 0.1;
+    double Push_Handy       = Approach_Handy;
+    double Push_Handz       = Approach_Handz + 0.15;
+    double Push_time        = 5.0; //30.0;
+
+    //RIGHT_PULL
+    double Pull_Handx       = Approach_Handx;
+    double Pull_Handy       = Approach_Handy;
+    double Pull_Handz       = Approach_Handz;
+    double Pull_time        = 10.0;
+
+
+    //RIGHT_HANDBACK
+    double HandBack_Handx   = 0.40;
+    double HandBack_Handy   = -0.246403;
+    double HandBack_Handz   = 0.60-0.13;//+0.03;
+    double HandBack_time    = 4.0;
+*/
+
     //LEFT HAND
+    //Different wrist angle
+    //LEFT_HANDUP
+    double leftHandup_Handx     = 0.40;
+    double leftHandup_Handy     = 0.246403;
+    double leftHandup_Handz     = 0.60-0.01-0.05-0.03;
+    double leftHandup_time      = 4.0;
+
+    //LEFT_APPROACH
+    double leftApproach_Handx   = leftHandup_Handx + 0.18;
+    double leftApproach_Handy   = leftHandup_Handy;
+    double leftApproach_Handz   = leftHandup_Handz+0.05+0.03;
+    double leftApproach_time    = 2.0;
+
+
+    //LEFT_PUSH
+    double leftPush_Handx       = leftApproach_Handx+0.1;//0.095;//0.065;
+    double leftPush_Handy       = leftApproach_Handy;
+    double leftPush_Handz       = leftApproach_Handz+0.15;//0.095;//0.065;
+    double leftPush_time        = 30.0;
+
+    //LEFT_PULL
+    double leftPull_Handx       = leftApproach_Handx;
+    double leftPull_Handy       = leftApproach_Handy;
+    double leftPull_Handz       = leftApproach_Handz;
+    double leftPull_time        = 10.0;
+
+
+    //LEFT_HANDBACK
+    double leftHandBack_Handx   = 0.40;
+    double leftHandBack_Handy   = 0.246403;
+    double leftHandBack_Handz   = 0.60-0.13;//+0.03;
+    double leftHandBack_time    = 4.0;
+
+    /*
     //Circular motion from up to Down
     //LEFT_HANDUP
     double leftHandup_Handx     = 0.40;
@@ -349,6 +453,7 @@ typedef struct{
     double leftHandBack_Handy   = 0.246403;
     double leftHandBack_Handz   = 0.60-0.13;//+0.03;
     double leftHandBack_time    = 4.0;
+    */
 
     /*
     //LEFT_HANDUP

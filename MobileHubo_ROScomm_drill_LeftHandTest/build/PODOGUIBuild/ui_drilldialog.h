@@ -61,12 +61,26 @@ public:
     QPushButton *PB_Release;
     QPushButton *PB_HalfOpen;
     QPushButton *PB_QuatClose;
+    QFrame *RIGHT_HAND;
+    QPushButton *PB_R_HandUp;
+    QLabel *label_RightHand;
+    QPushButton *PB_R_Approach;
+    QPushButton *PB_R_Push;
+    QPushButton *PB_R_Pull;
+    QPushButton *PB_R_Release;
+    QPushButton *PB_R_HalfOpen;
+    QPushButton *PB_R_QuatClose;
+    QFrame *frame_gripper_right;
+    QPushButton *PB_RGripper_grasp;
+    QLabel *label_RGripper;
+    QPushButton *PB_RGripper_open;
+    QPushButton *PB_R_angle;
 
     void setupUi(QDialog *DrillDialog)
     {
         if (DrillDialog->objectName().isEmpty())
             DrillDialog->setObjectName(QStringLiteral("DrillDialog"));
-        DrillDialog->resize(600, 549);
+        DrillDialog->resize(650, 611);
         frame_gripper = new QFrame(DrillDialog);
         frame_gripper->setObjectName(QStringLiteral("frame_gripper"));
         frame_gripper->setGeometry(QRect(120, 10, 191, 71));
@@ -96,14 +110,14 @@ public:
         PB_WalkReady->setFont(font1);
         PB_STOP = new QPushButton(DrillDialog);
         PB_STOP->setObjectName(QStringLiteral("PB_STOP"));
-        PB_STOP->setGeometry(QRect(390, 170, 91, 151));
+        PB_STOP->setGeometry(QRect(500, 50, 91, 151));
         PB_STOP->setFont(font);
         PB_getCOM = new QPushButton(DrillDialog);
         PB_getCOM->setObjectName(QStringLiteral("PB_getCOM"));
-        PB_getCOM->setGeometry(QRect(390, 130, 91, 31));
+        PB_getCOM->setGeometry(QRect(500, 10, 91, 31));
         frame_DRILL = new QFrame(DrillDialog);
         frame_DRILL->setObjectName(QStringLiteral("frame_DRILL"));
-        frame_DRILL->setGeometry(QRect(10, 90, 371, 241));
+        frame_DRILL->setGeometry(QRect(570, 580, 371, 241));
         frame_DRILL->setFrameShape(QFrame::StyledPanel);
         frame_DRILL->setFrameShadow(QFrame::Raised);
         frame_HoldDrill = new QFrame(frame_DRILL);
@@ -185,7 +199,7 @@ public:
         PB_Put->setGeometry(QRect(250, 40, 111, 31));
         LeftHand = new QFrame(DrillDialog);
         LeftHand->setObjectName(QStringLiteral("LeftHand"));
-        LeftHand->setGeometry(QRect(10, 340, 471, 131));
+        LeftHand->setGeometry(QRect(10, 470, 461, 131));
         LeftHand->setFrameShape(QFrame::StyledPanel);
         LeftHand->setFrameShadow(QFrame::Raised);
         PB_HandUp = new QPushButton(LeftHand);
@@ -199,19 +213,66 @@ public:
         PB_Approach->setGeometry(QRect(30, 70, 80, 22));
         PB_Push = new QPushButton(LeftHand);
         PB_Push->setObjectName(QStringLiteral("PB_Push"));
-        PB_Push->setGeometry(QRect(150, 40, 80, 22));
+        PB_Push->setGeometry(QRect(140, 40, 80, 22));
         PB_Pull = new QPushButton(LeftHand);
         PB_Pull->setObjectName(QStringLiteral("PB_Pull"));
-        PB_Pull->setGeometry(QRect(150, 70, 80, 22));
+        PB_Pull->setGeometry(QRect(140, 70, 80, 22));
         PB_Release = new QPushButton(LeftHand);
         PB_Release->setObjectName(QStringLiteral("PB_Release"));
-        PB_Release->setGeometry(QRect(270, 40, 80, 22));
+        PB_Release->setGeometry(QRect(250, 40, 80, 22));
         PB_HalfOpen = new QPushButton(LeftHand);
         PB_HalfOpen->setObjectName(QStringLiteral("PB_HalfOpen"));
-        PB_HalfOpen->setGeometry(QRect(370, 40, 80, 22));
+        PB_HalfOpen->setGeometry(QRect(360, 40, 80, 22));
         PB_QuatClose = new QPushButton(LeftHand);
         PB_QuatClose->setObjectName(QStringLiteral("PB_QuatClose"));
-        PB_QuatClose->setGeometry(QRect(370, 70, 80, 22));
+        PB_QuatClose->setGeometry(QRect(360, 70, 80, 22));
+        RIGHT_HAND = new QFrame(DrillDialog);
+        RIGHT_HAND->setObjectName(QStringLiteral("RIGHT_HAND"));
+        RIGHT_HAND->setGeometry(QRect(10, 90, 461, 131));
+        RIGHT_HAND->setFrameShape(QFrame::StyledPanel);
+        RIGHT_HAND->setFrameShadow(QFrame::Raised);
+        PB_R_HandUp = new QPushButton(RIGHT_HAND);
+        PB_R_HandUp->setObjectName(QStringLiteral("PB_R_HandUp"));
+        PB_R_HandUp->setGeometry(QRect(20, 40, 80, 22));
+        label_RightHand = new QLabel(RIGHT_HAND);
+        label_RightHand->setObjectName(QStringLiteral("label_RightHand"));
+        label_RightHand->setGeometry(QRect(10, 10, 141, 21));
+        PB_R_Approach = new QPushButton(RIGHT_HAND);
+        PB_R_Approach->setObjectName(QStringLiteral("PB_R_Approach"));
+        PB_R_Approach->setGeometry(QRect(20, 100, 80, 22));
+        PB_R_Push = new QPushButton(RIGHT_HAND);
+        PB_R_Push->setObjectName(QStringLiteral("PB_R_Push"));
+        PB_R_Push->setGeometry(QRect(110, 40, 80, 22));
+        PB_R_Pull = new QPushButton(RIGHT_HAND);
+        PB_R_Pull->setObjectName(QStringLiteral("PB_R_Pull"));
+        PB_R_Pull->setGeometry(QRect(110, 70, 80, 22));
+        PB_R_Release = new QPushButton(RIGHT_HAND);
+        PB_R_Release->setObjectName(QStringLiteral("PB_R_Release"));
+        PB_R_Release->setGeometry(QRect(110, 100, 80, 22));
+        PB_R_HalfOpen = new QPushButton(RIGHT_HAND);
+        PB_R_HalfOpen->setObjectName(QStringLiteral("PB_R_HalfOpen"));
+        PB_R_HalfOpen->setGeometry(QRect(280, 100, 80, 22));
+        PB_R_QuatClose = new QPushButton(RIGHT_HAND);
+        PB_R_QuatClose->setObjectName(QStringLiteral("PB_R_QuatClose"));
+        PB_R_QuatClose->setGeometry(QRect(370, 100, 80, 22));
+        frame_gripper_right = new QFrame(RIGHT_HAND);
+        frame_gripper_right->setObjectName(QStringLiteral("frame_gripper_right"));
+        frame_gripper_right->setGeometry(QRect(260, 20, 191, 71));
+        frame_gripper_right->setFrameShape(QFrame::StyledPanel);
+        frame_gripper_right->setFrameShadow(QFrame::Raised);
+        PB_RGripper_grasp = new QPushButton(frame_gripper_right);
+        PB_RGripper_grasp->setObjectName(QStringLiteral("PB_RGripper_grasp"));
+        PB_RGripper_grasp->setGeometry(QRect(100, 40, 80, 22));
+        label_RGripper = new QLabel(frame_gripper_right);
+        label_RGripper->setObjectName(QStringLiteral("label_RGripper"));
+        label_RGripper->setGeometry(QRect(10, 10, 171, 21));
+        label_RGripper->setFont(font);
+        PB_RGripper_open = new QPushButton(frame_gripper_right);
+        PB_RGripper_open->setObjectName(QStringLiteral("PB_RGripper_open"));
+        PB_RGripper_open->setGeometry(QRect(10, 40, 80, 22));
+        PB_R_angle = new QPushButton(RIGHT_HAND);
+        PB_R_angle->setObjectName(QStringLiteral("PB_R_angle"));
+        PB_R_angle->setGeometry(QRect(20, 70, 80, 22));
 
         retranslateUi(DrillDialog);
 
@@ -222,7 +283,7 @@ public:
     {
         DrillDialog->setWindowTitle(QApplication::translate("DrillDialog", "Dialog", 0));
         PB_Gripper_grasp->setText(QApplication::translate("DrillDialog", "Close", 0));
-        label_Gripper_right->setText(QApplication::translate("DrillDialog", "Gripper - Right", 0));
+        label_Gripper_right->setText(QApplication::translate("DrillDialog", "Gripper", 0));
         PB_Gripper_open->setText(QApplication::translate("DrillDialog", "Open", 0));
         PB_WalkReady->setText(QApplication::translate("DrillDialog", "Walk\n"
 "Ready", 0));
@@ -253,6 +314,18 @@ public:
         PB_Release->setText(QApplication::translate("DrillDialog", "Release", 0));
         PB_HalfOpen->setText(QApplication::translate("DrillDialog", "half_open", 0));
         PB_QuatClose->setText(QApplication::translate("DrillDialog", "quat_close", 0));
+        PB_R_HandUp->setText(QApplication::translate("DrillDialog", "Hand Up", 0));
+        label_RightHand->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">RIGHT HAND</span></p></body></html>", 0));
+        PB_R_Approach->setText(QApplication::translate("DrillDialog", "Approach", 0));
+        PB_R_Push->setText(QApplication::translate("DrillDialog", "Push", 0));
+        PB_R_Pull->setText(QApplication::translate("DrillDialog", "Pull", 0));
+        PB_R_Release->setText(QApplication::translate("DrillDialog", "Release", 0));
+        PB_R_HalfOpen->setText(QApplication::translate("DrillDialog", "half_open", 0));
+        PB_R_QuatClose->setText(QApplication::translate("DrillDialog", "quat_close", 0));
+        PB_RGripper_grasp->setText(QApplication::translate("DrillDialog", "Close", 0));
+        label_RGripper->setText(QApplication::translate("DrillDialog", "Gripper-RIGHT", 0));
+        PB_RGripper_open->setText(QApplication::translate("DrillDialog", "Open", 0));
+        PB_R_angle->setText(QApplication::translate("DrillDialog", "angle", 0));
     } // retranslateUi
 
 };

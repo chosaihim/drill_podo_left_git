@@ -78,6 +78,26 @@ private slots:
 
     void on_PB_QuatClose_clicked();
 
+    void on_PB_R_HandUp_clicked();
+
+    void on_PB_R_Approach_clicked();
+
+    void on_PB_R_Push_clicked();
+
+    void on_PB_R_Pull_clicked();
+
+    void on_PB_R_Release_clicked();
+
+    void on_PB_R_HalfOpen_clicked();
+
+    void on_PB_R_QuatClose_clicked();
+
+    void on_PB_RGripper_open_clicked();
+
+    void on_PB_RGripper_grasp_clicked();
+
+    void on_PB_R_angle_clicked();
+
 private:
     Ui::DrillDialog *ui;
     LANDialog       *lanData;

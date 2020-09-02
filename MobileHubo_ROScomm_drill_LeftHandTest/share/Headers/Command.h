@@ -72,6 +72,16 @@ enum
     LEFT_PUSH,
     LEFT_PULL,
     LEFT_RELEASE,
+
+    //RIGHT
+    RIGHT_HANDUP,
+    RIGHT_APPROACH,
+    RIGHT_PUSH,
+    RIGHT_PULL,
+    RIGHT_RELEASE,
+
+    ANGLE_TEST,
+
 };
 
 #endif // COMMAND_H
