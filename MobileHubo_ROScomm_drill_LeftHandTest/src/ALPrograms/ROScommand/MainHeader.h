@@ -146,6 +146,7 @@ void WristAngle();
 void SetOriHand(doubles &target, double _pitch, double _yaw);
 void SetOriHand_YP(doubles &target, double _pitch, double _yaw);
 void SetOriHand_PYP(doubles &target, double _pitch, double _yaw, double _pitch2);
+void SetOriHand_RPY(doubles &target, double _roll, double _pitch, double _yaw);
 
 // TOOL motion //
 void SetWaitTime(int mode, double time);

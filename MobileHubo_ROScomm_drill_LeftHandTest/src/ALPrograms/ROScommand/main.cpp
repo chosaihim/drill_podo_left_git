@@ -1439,8 +1439,8 @@ void ToolTask_Supervisor()
 
             //mode1
 //            SetOriHand(RHori,-90.0,0.0);
-            SetOriHand_YP(RHori,-90.0,90.0);
-//            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+//            SetOriHand_YP(RHori,-90.0,90.0);
+            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
 
             //mode2
@@ -1470,9 +1470,14 @@ void ToolTask_Supervisor()
 //            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Push_time);
 
 //            SetOriHand(RHori,-90.0,0.0);
-            SetOriHand_YP(RHori,-90.0,100.0);
+//            SetOriHand_YP(RHori,-90.0,100.0);
 //            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
-            WBmotion->addRHOriInfo(RHori, drill_in.Push_time);
+//            WBmotion->addRHOriInfo(RHori, drill_in.Push_time);
+
+            cout << "111 quat: (" << WBmotion->qRH_4x1[0] << ", "
+                              << WBmotion->qRH_4x1[1] << ", "
+                              << WBmotion->qRH_4x1[2] << ", "
+                              << WBmotion->qRH_4x1[3] << ") " << endl;
 
 
             //variables
@@ -1516,7 +1521,15 @@ void ToolTask_Supervisor()
         }
         case RIGHT_PULL:
         {
+
+            cout << "222 quat: (" << WBmotion->qRH_4x1[0] << ", "
+                              << WBmotion->qRH_4x1[1] << ", "
+                              << WBmotion->qRH_4x1[2] << ", "
+                              << WBmotion->qRH_4x1[3] << ") " << endl;
+
             FILE_LOG(logSUCCESS) << "RIGHT_PULL";
+
+
 
             RHpos[0] = drill_in.Pull_Handx;
             RHpos[1] = drill_in.Pull_Handy;
@@ -1524,9 +1537,10 @@ void ToolTask_Supervisor()
 
             WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Pull_time);
 
-            SetOriHand(RHori,-90.0,0.0);
-            SetOriHand_YP(RHori,-90.0,90.0);
+//            SetOriHand(RHori,-90.0,0.0);
+//            SetOriHand_YP(RHori,-90.0,90.0);
 //            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Pull_time);
 
             Mode_TOOL = DRILL_NOTHING;
@@ -1563,6 +1577,22 @@ void ToolTask_Supervisor()
 //            SetOriHand_YP(RHori,-140.0,0.0);
 //            WBmotion->addRHOriInfo(RHori, drill_in.Handup_time);
         }
+        case SET_ANGLE_TEST:
+        {
+            FILE_LOG(logSUCCESS) << ">>> SET_ANGLE_TEST" ;
+
+//            SetOriHand_YP(RHori,-90.0,90.0);
+
+//            SetOriHand(RHori,90.0,0.0);
+//            SetOriHand_RPY(RHori,0.0,-90.0,90.0);
+//            SetOriHand_YP(LHori,-90.0,90.0);
+
+            SetOriHand_PYP(RHori,-90.0,90.0,-20);
+            WBmotion->addRHOriInfo(RHori, 5.0);
+
+            SetOriHand_PYP(LHori,-90.0,90.0,20);
+            WBmotion->addLHOriInfo(LHori, 5.0);
+       }
 
         case DRILL_NOTHING:
         {

@@ -81,6 +81,7 @@ enum
     RIGHT_RELEASE,
 
     ANGLE_TEST,
+    SET_ANGLE_TEST,
 
 };
 

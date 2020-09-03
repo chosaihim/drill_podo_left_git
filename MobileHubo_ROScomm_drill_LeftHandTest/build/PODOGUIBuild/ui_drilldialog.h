@@ -75,6 +75,7 @@ public:
     QLabel *label_RGripper;
     QPushButton *PB_RGripper_open;
     QPushButton *PB_R_angle;
+    QPushButton *PB_angleTest;
 
     void setupUi(QDialog *DrillDialog)
     {
@@ -273,6 +274,9 @@ public:
         PB_R_angle = new QPushButton(RIGHT_HAND);
         PB_R_angle->setObjectName(QStringLiteral("PB_R_angle"));
         PB_R_angle->setGeometry(QRect(20, 70, 80, 22));
+        PB_angleTest = new QPushButton(DrillDialog);
+        PB_angleTest->setObjectName(QStringLiteral("PB_angleTest"));
+        PB_angleTest->setGeometry(QRect(50, 260, 80, 22));
 
         retranslateUi(DrillDialog);
 
@@ -326,6 +330,7 @@ public:
         label_RGripper->setText(QApplication::translate("DrillDialog", "Gripper-RIGHT", 0));
         PB_RGripper_open->setText(QApplication::translate("DrillDialog", "Open", 0));
         PB_R_angle->setText(QApplication::translate("DrillDialog", "angle", 0));
+        PB_angleTest->setText(QApplication::translate("DrillDialog", "AngleTest", 0));
     } // retranslateUi
 
 };

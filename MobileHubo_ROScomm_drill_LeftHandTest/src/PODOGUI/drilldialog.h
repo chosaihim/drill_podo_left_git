@@ -98,6 +98,8 @@ private slots:
 
     void on_PB_R_angle_clicked();
 
+    void on_PB_angleTest_clicked();
+
 private:
     Ui::DrillDialog *ui;
     LANDialog       *lanData;
