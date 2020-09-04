@@ -377,3 +377,21 @@ void DrillDialog::on_PB_angleTest_clicked()
     cmd.COMMAND_DATA.USER_PARA_INT[0] = SET_ANGLE_TEST;
     pLAN->SendCommand(cmd);
 }
+
+void DrillDialog::on_PB_save_clicked()
+{
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = SAVE_SAVE;
+    pLAN->SendCommand(cmd);
+}
+
+void DrillDialog::on_PB_done_clicked()
+{
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = SAVE_DONE;
+    pLAN->SendCommand(cmd);
+}

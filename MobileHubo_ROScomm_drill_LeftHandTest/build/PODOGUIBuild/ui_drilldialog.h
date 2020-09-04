@@ -76,6 +76,10 @@ public:
     QPushButton *PB_RGripper_open;
     QPushButton *PB_R_angle;
     QPushButton *PB_angleTest;
+    QFrame *frame;
+    QLabel *label_Save;
+    QPushButton *PB_save;
+    QPushButton *PB_done;
 
     void setupUi(QDialog *DrillDialog)
     {
@@ -277,6 +281,20 @@ public:
         PB_angleTest = new QPushButton(DrillDialog);
         PB_angleTest->setObjectName(QStringLiteral("PB_angleTest"));
         PB_angleTest->setGeometry(QRect(50, 260, 80, 22));
+        frame = new QFrame(DrillDialog);
+        frame->setObjectName(QStringLiteral("frame"));
+        frame->setGeometry(QRect(370, 230, 101, 101));
+        frame->setFrameShape(QFrame::StyledPanel);
+        frame->setFrameShadow(QFrame::Raised);
+        label_Save = new QLabel(frame);
+        label_Save->setObjectName(QStringLiteral("label_Save"));
+        label_Save->setGeometry(QRect(20, 10, 71, 21));
+        PB_save = new QPushButton(frame);
+        PB_save->setObjectName(QStringLiteral("PB_save"));
+        PB_save->setGeometry(QRect(10, 40, 80, 22));
+        PB_done = new QPushButton(frame);
+        PB_done->setObjectName(QStringLiteral("PB_done"));
+        PB_done->setGeometry(QRect(10, 70, 80, 22));
 
         retranslateUi(DrillDialog);
 
@@ -331,6 +349,9 @@ public:
         PB_RGripper_open->setText(QApplication::translate("DrillDialog", "Open", 0));
         PB_R_angle->setText(QApplication::translate("DrillDialog", "angle", 0));
         PB_angleTest->setText(QApplication::translate("DrillDialog", "AngleTest", 0));
+        label_Save->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">SAVE</span></p></body></html>", 0));
+        PB_save->setText(QApplication::translate("DrillDialog", "save", 0));
+        PB_done->setText(QApplication::translate("DrillDialog", "done", 0));
     } // retranslateUi
 
 };

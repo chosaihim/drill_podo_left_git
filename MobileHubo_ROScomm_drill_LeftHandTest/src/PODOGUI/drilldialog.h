@@ -100,6 +100,10 @@ private slots:
 
     void on_PB_angleTest_clicked();
 
+    void on_PB_save_clicked();
+
+    void on_PB_done_clicked();
+
 private:
     Ui::DrillDialog *ui;
     LANDialog       *lanData;

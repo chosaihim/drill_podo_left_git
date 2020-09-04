@@ -83,6 +83,10 @@ enum
     ANGLE_TEST,
     SET_ANGLE_TEST,
 
+    //Save
+    SAVE_SAVE,
+    SAVE_DONE,
+
 };
 
 #endif // COMMAND_H

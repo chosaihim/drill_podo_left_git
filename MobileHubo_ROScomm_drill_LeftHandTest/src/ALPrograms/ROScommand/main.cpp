@@ -60,6 +60,9 @@ RT_TASK rtJoystickCon;
 JointControlClass *joint;
 TaskMotion        *WBmotion;
 
+
+bool    FlagSave = false;
+
 double  RHpos[3]  = {0.,};
 double  LHpos[3]  = {0.,};
 doubles RHori(4);
@@ -688,6 +691,34 @@ void RBTaskThread(void *)
             sharedROS->state_arm = ROBOT_NOT_MOVE;
         }
         rt_task_suspend(&rtTaskCon);
+
+        if(FlagSave) {
+
+            //FILE WRITING_daemon reference
+            FILE *daemonFile = NULL;
+            daemonFile = fopen("/home/rainbow/Desktop/daemon_ref.txt","a");
+            //FILE WRITING_daemon reference
+            FILE *alFile = NULL;
+            alFile = fopen("/home/rainbow/Desktop/al_ref.txt","a");
+            if((daemonFile == NULL))
+                std::cout << "Failed to open daemon_ref.txt" << std::endl;
+            if((alFile == NULL))
+                std::cout << "Failed to open al_ref.txt" << std::endl;
+            else{
+                for(int joint_num = RHY; joint_num <= LHAND; joint_num++){
+                    fprintf(daemonFile,"%f, ",sharedSEN->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentReference);
+                    fprintf(alFile,"%f, ",sharedREF->JointReference[PODO_NO][MC_ID_CH_Pairs[joint_num].id][MC_ID_CH_Pairs[joint_num].ch]);
+//                    fprintf(daemonFile,"%f, ",sharedData->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentReference);
+    //                fprintf(daemonFile,"%f, ",sharedData->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentPosition);
+                }
+                fprintf(daemonFile,"\n");
+                fprintf(alFile,"\n");
+            }
+            fclose(daemonFile);
+            fclose(alFile);
+
+        }
+
     }
 }
 
@@ -1587,13 +1618,24 @@ void ToolTask_Supervisor()
 //            SetOriHand_RPY(RHori,0.0,-90.0,90.0);
 //            SetOriHand_YP(LHori,-90.0,90.0);
 
-            SetOriHand_PYP(RHori,-90.0,90.0,-20);
+            SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
             WBmotion->addRHOriInfo(RHori, 5.0);
 
-            SetOriHand_PYP(LHori,-90.0,90.0,20);
+            SetOriHand_PYP(LHori,-90.0,90.0,20.0);
             WBmotion->addLHOriInfo(LHori, 5.0);
-       }
-
+        }
+        case SAVE_SAVE:
+        {
+            FlagSave = true;
+            Mode_TOOL = DRILL_NOTHING;
+            break;
+        }
+        case SAVE_DONE:
+        {
+            FlagSave = false;
+            Mode_TOOL = DRILL_NOTHING;
+            break;
+        }
         case DRILL_NOTHING:
         {
             Mode_TOOL = DRILL_NOTHING;
