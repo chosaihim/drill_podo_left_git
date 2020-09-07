@@ -324,13 +324,13 @@ typedef struct{
     //RIGHT_HANDUP
     double Handup_Handx     = 0.50;//0.40+0.05;
     double Handup_Handy     = -0.246403;
-    double Handup_Handz     = 0.65;//0.51;
+    double Handup_Handz     = 0.65+0.04;//0.51;
     double Handup_time      = 4.0;
 
     //RIGHT_APPROACH
     double Approach_Handx   = 0.55;//63;//Handup_Handx + 0.03;
     double Approach_Handy   = Handup_Handy;
-    double Approach_Handz   = 0.60+0.06;//Handup_Handz + 0.08 +0.01;
+    double Approach_Handz   = 0.60+0.09;//Handup_Handz + 0.08 +0.01;
     double Approach_time    = 2.0;
 
 
@@ -350,7 +350,7 @@ typedef struct{
     //RIGHT_HANDBACK
     double HandBack_Handx   = 0.40;
     double HandBack_Handy   = -0.246403;
-    double HandBack_Handz   = 0.67;//0.60-0.13;//+0.03;
+    double HandBack_Handz   = 0.69;//0.60-0.13;//+0.03;
     double HandBack_time    = 4.0;
     /*
     //Circular motion from up to Down

@@ -1447,12 +1447,14 @@ void ToolTask_Supervisor()
             WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Handup_time);
 
             //mode1
-            SetOriHand_YP(RHori,-90.0,0.0);
+//            SetOriHand_YP(RHori,-90.0,0.0);
+            SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Handup_time);
 
             //mode2
 //            SetOriHand(RHori,-90.0,90.0);
 //            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+
             Mode_TOOL = DRILL_NOTHING;
 
             break;
@@ -1471,7 +1473,7 @@ void ToolTask_Supervisor()
             //mode1
 //            SetOriHand(RHori,-90.0,0.0);
 //            SetOriHand_YP(RHori,-90.0,90.0);
-            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+            SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
 
             //mode2
@@ -1517,7 +1519,7 @@ void ToolTask_Supervisor()
 
             //angle
             double th_start = (180 - 15) * D2R;
-            double th_end   = (180 + 80) * D2R; //(180 + 80) * D2R;
+            double th_end   = (180 + 85) * D2R; //(180 + 80) * D2R;
             double th       = th_start;
             double d_th     = ((th_end - th_start))/(pushTime_count);
 
@@ -1570,8 +1572,7 @@ void ToolTask_Supervisor()
 
 //            SetOriHand(RHori,-90.0,0.0);
 //            SetOriHand_YP(RHori,-90.0,90.0);
-//            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
-            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
+            SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Pull_time);
 
             Mode_TOOL = DRILL_NOTHING;
@@ -1588,6 +1589,8 @@ void ToolTask_Supervisor()
 
             WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.HandBack_time);
 
+            SetOriHand_YP(RHori,-90.0,-90.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.HandBack_time);
             Mode_TOOL = DRILL_NOTHING;
 
             break;
@@ -1616,12 +1619,12 @@ void ToolTask_Supervisor()
 
 //            SetOriHand(RHori,90.0,0.0);
 //            SetOriHand_RPY(RHori,0.0,-90.0,90.0);
-//            SetOriHand_YP(LHori,-90.0,90.0);
+//            SetOriHand_YP(RHori,-90.0,90.0);
 
             SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
             WBmotion->addRHOriInfo(RHori, 5.0);
 
-            SetOriHand_PYP(LHori,-90.0,90.0,20.0);
+            SetOriHand_PYP(LHori,-90.0,90.0,0.0);
             WBmotion->addLHOriInfo(LHori, 5.0);
         }
         case SAVE_SAVE:
