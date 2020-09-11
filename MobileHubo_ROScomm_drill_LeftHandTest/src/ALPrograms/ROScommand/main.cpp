@@ -1448,7 +1448,7 @@ void ToolTask_Supervisor()
 
             //mode1
 //            SetOriHand_YP(RHori,-90.0,0.0);
-            SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
+            SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Handup_time);
 
             //mode2
@@ -1474,6 +1474,7 @@ void ToolTask_Supervisor()
 //            SetOriHand(RHori,-90.0,0.0);
 //            SetOriHand_YP(RHori,-90.0,90.0);
             SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
+//            SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,-20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
 
             //mode2
@@ -1495,7 +1496,6 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "RIGHT_PUSH";
 
-
             RHpos[0] = drill_in.Push_Handx;
             RHpos[1] = drill_in.Push_Handy;
             RHpos[2] = drill_in.Push_Handz;
@@ -1512,7 +1512,6 @@ void ToolTask_Supervisor()
                               << WBmotion->qRH_4x1[2] << ", "
                               << WBmotion->qRH_4x1[3] << ") " << endl;
 
-
             //variables
             //Time
             double pushTime_count = drill_in.Push_time * 200;
@@ -1526,26 +1525,55 @@ void ToolTask_Supervisor()
             //xz plane
             double x  = 0;
             double z  = 0;
-            double r  = 0.20;
+            double r  = 0.250;
             double x0 = drill_in.Approach_Handx - r * cos(th);  //0.68;
             double z0 = drill_in.Approach_Handz - r * sin(th);  //0.57;
 
             double hand_yaw = 90;
             double d_hYaw   = 35 / pushTime_count;
 
+            double timecount_wrist = pushTime_count * 25/((th_end - th_start)*R2D);
+            double th_wrist = 0;
+            double d_th_wrist = (45 / timecount_wrist);
+
+            int local_h_flag = false;
+
             while(pushTime_count--)
             {
-                //start from bottom
                 th = th + d_th;
                 x  = x0 + r * cos(th);
                 z  = z0 + r * sin(th);
 
                 WBmotion->addRHPosInfo(x, RHpos[1], z, 0.005);
 
-//                hand_yaw -= d_hYaw;
-//                SetOriHand_PYP(RHori,-90.0,hand_yaw,-20.0);
-            }
 
+                if((180 + 20)*D2R > th){
+                    SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,0.0);
+                    WBmotion->addRHOriInfo(RHori, 0.005);
+                }else if((180 + 45)*D2R > th){
+//                    if(!local_h_flag){
+//                        local_h_flag = true;
+
+
+//                        joint->RefreshToCurrentReference(GRIPPERonly);
+//                        FLAG_Gripper = true;
+//                        MODE_LGripper = GRIPPER_CLOSE_QUATER;
+//                        MODE_RGripper = MODE_Gripper;
+//                        CalculateLIMITGripper();
+//                    }
+
+
+//                    FLAG_Gripper = true;
+
+                    th_wrist -= d_th_wrist;
+                    SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,th_wrist); //th*R2D-270.0);
+                    WBmotion->addRHOriInfo(RHori, 0.005);
+                }
+                else{
+                    SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,th*R2D-270.0);
+                    WBmotion->addRHOriInfo(RHori, 0.005);
+                }
+            }
             cout << "(x,z) = (" << x << ", " << z << ")" << endl;
 
             Mode_TOOL = DRILL_NOTHING;
@@ -1554,6 +1582,9 @@ void ToolTask_Supervisor()
         }
         case RIGHT_PULL:
         {
+
+//            FLAG_Gripper = false;
+
 
             cout << "222 quat: (" << WBmotion->qRH_4x1[0] << ", "
                               << WBmotion->qRH_4x1[1] << ", "
@@ -1615,17 +1646,45 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << ">>> SET_ANGLE_TEST" ;
 
-//            SetOriHand_YP(RHori,-90.0,90.0);
+            //HAND MOTION
+
+            //variables
+            //Time
+            double pushTime_count = drill_in.Push_time * 200;
+
+            //angle
+            double th_start = (180 - 15) * D2R;
+
+            //xz plane
+            double x  = 0, y = 0, z = 0;
+            double r  = 0.20;
+            double x0 = drill_in.Approach_Handx - r * cos(th_start);  //0.68;
+            double z0 = drill_in.Approach_Handz - r * sin(th_start);  //0.57;
+
+            //start from bottom
+            double th = (180 + 45) * D2R; // th + d_th;
+            x  = x0 + r * cos(th);
+            z  = z0 + r * sin(th);
+            y  = drill_in.Approach_Handy;
+
+            WBmotion->addRHPosInfo(x, y, z, 5.0);
+
+            cout << "angle test (x,z) = (" << x << ", " << z << ")" << endl;
+
+            //END HAND MOTION
+
 
 //            SetOriHand(RHori,90.0,0.0);
-//            SetOriHand_RPY(RHori,0.0,-90.0,90.0);
-//            SetOriHand_YP(RHori,-90.0,90.0);
-
-            SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
+            SetOriHand_PYPR(RHori, -90.0, -90.0, 20.0, -45.0);
+//            SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
             WBmotion->addRHOriInfo(RHori, 5.0);
 
-            SetOriHand_PYP(LHori,-90.0,90.0,0.0);
-            WBmotion->addLHOriInfo(LHori, 5.0);
+//            SetOriHand_PYP(LHori,-90.0,90.0,0.0);
+//            WBmotion->addLHOriInfo(LHori, 5.0);
+
+
+            Mode_TOOL = DRILL_NOTHING;
+            break;
         }
         case SAVE_SAVE:
         {
@@ -3686,7 +3745,7 @@ void CalculateLIMITGripper()
         }
         else if(MODE_Gripper == GRIPPER_CLOSE_QUATER)
         {
-            LIMIT_Gripper = -900.;//-400.;
+            LIMIT_Gripper = -700.;//-400.;
         }
         else
         {
@@ -4020,9 +4079,9 @@ void SetOriHand_PYP(doubles &target, double _pitch, double _yaw, double _pitch2)
     }
 }
 
-void SetOriHand_RPY(doubles &target, double _roll, double _pitch, double _yaw) //_pitchYawPitch
+void SetOriHand_PYPR(doubles &target, double _pitch, double _yaw, double _pitch2, double _roll)//_pitchYawPitchRoll
 {
-    quat pelori = quat(vec3(1,0,0), _roll*D2R)*quat(vec3(0,1,0), _pitch*D2R)*quat(vec3(0,0,1), _yaw*D2R);
+    quat pelori = quat(vec3(0,1,0), _pitch*D2R)*quat(vec3(0,0,1), _yaw*D2R)*quat(vec3(0,1,0), _pitch2*D2R)*quat(vec3(1,0,0), _roll*D2R);
     for(int i=0;i<4;i++)
     {
         target[i] = pelori[i];

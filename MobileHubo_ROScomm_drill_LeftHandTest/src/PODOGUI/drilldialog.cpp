@@ -271,6 +271,8 @@ void DrillDialog::on_PB_QuatClose_clicked()
 //RIGHT
 void DrillDialog::on_PB_R_HandUp_clicked()
 {
+    ui->PB_R_Push->setDisabled(true);
+
     USER_COMMAND cmd;
     cmd.COMMAND_TARGET = ALNum_ROScommand;
     cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
@@ -280,6 +282,8 @@ void DrillDialog::on_PB_R_HandUp_clicked()
 
 void DrillDialog::on_PB_R_Approach_clicked()
 {
+    ui->PB_R_Push->setDisabled(false);
+
     USER_COMMAND cmd;
     cmd.COMMAND_TARGET = ALNum_ROScommand;
     cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
@@ -289,6 +293,8 @@ void DrillDialog::on_PB_R_Approach_clicked()
 
 void DrillDialog::on_PB_R_Push_clicked()
 {
+    ui->PB_R_Push->setDisabled(true);
+
     USER_COMMAND cmd;
     cmd.COMMAND_TARGET = ALNum_ROScommand;
     cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
@@ -298,6 +304,8 @@ void DrillDialog::on_PB_R_Push_clicked()
 
 void DrillDialog::on_PB_R_Pull_clicked()
 {
+    ui->PB_R_Push->setDisabled(false);
+
     USER_COMMAND cmd;
     cmd.COMMAND_TARGET = ALNum_ROScommand;
     cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
@@ -307,6 +315,9 @@ void DrillDialog::on_PB_R_Pull_clicked()
 
 void DrillDialog::on_PB_R_Release_clicked()
 {
+
+    ui->PB_R_Push->setDisabled(true);
+
     USER_COMMAND cmd;
     cmd.COMMAND_TARGET = ALNum_ROScommand;
     cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;

@@ -147,6 +147,7 @@ void SetOriHand(doubles &target, double _pitch, double _yaw);
 void SetOriHand_YP(doubles &target, double _pitch, double _yaw);
 void SetOriHand_PYP(doubles &target, double _pitch, double _yaw, double _pitch2);
 void SetOriHand_RPY(doubles &target, double _roll, double _pitch, double _yaw);
+void SetOriHand_PYPR(doubles &target, double _pitch, double _yaw, double _pitch2, double _roll);
 
 // TOOL motion //
 void SetWaitTime(int mode, double time);
@@ -323,13 +324,13 @@ typedef struct{
     //Different angle; Circular motion from up to Down
     //RIGHT_HANDUP
     double Handup_Handx     = 0.50;//0.40+0.05;
-    double Handup_Handy     = -0.246403;
+    double Handup_Handy     = -0.246403 - 0.10;
     double Handup_Handz     = 0.65+0.04;//0.51;
     double Handup_time      = 4.0;
 
     //RIGHT_APPROACH
     double Approach_Handx   = 0.55;//63;//Handup_Handx + 0.03;
-    double Approach_Handy   = Handup_Handy;
+    double Approach_Handy   = -0.246403;//Handup_Handy;
     double Approach_Handz   = 0.60+0.09;//Handup_Handz + 0.08 +0.01;
     double Approach_time    = 2.0;
 
@@ -338,7 +339,7 @@ typedef struct{
     double Push_Handx       = Approach_Handx +0.08;// + 0.1;
     double Push_Handy       = Approach_Handy;
     double Push_Handz       = Approach_Handz - 0.20;
-    double Push_time        = 10.0; //30.0;
+    double Push_time        = 20.0; //30.0;
 
     //RIGHT_PULL
     double Pull_Handx       = Approach_Handx;
@@ -349,7 +350,7 @@ typedef struct{
 
     //RIGHT_HANDBACK
     double HandBack_Handx   = 0.40;
-    double HandBack_Handy   = -0.246403;
+    double HandBack_Handy   = -0.246403 -0.10;
     double HandBack_Handz   = 0.69;//0.60-0.13;//+0.03;
     double HandBack_time    = 4.0;
     /*
