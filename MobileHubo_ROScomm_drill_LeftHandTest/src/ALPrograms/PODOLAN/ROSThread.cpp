@@ -150,16 +150,16 @@ void ROSWorker::ReadfromROS(){
     sharedUSER->vel_cmd[1] = RXData.vth;
 
     //read action
-    sharedROS->Arm_action = RXData.ros2podo_data.Arm_action;
+    sharedROS->Arm_action  = RXData.ros2podo_data.Arm_action;
     sharedROS->Base_action = RXData.ros2podo_data.Base_action;
     printf("%f\n",RXData.ros2podo_data.Base_action.wheel.VelX);
     sharedROS->Gripper_action.side = RXData.ros2podo_data.Gripper_action.side;
     sharedROS->Gripper_action.desired_mm = RXData.ros2podo_data.Gripper_action.desired_mm;
     sharedROS->ROSindex = RXData.ros2podo_data.index;
     //read command
-    sharedROS->COMMAND.CMD_GRIPPER = RXData.ros2podo_data.CMD_GRIPPER;
-    sharedROS->COMMAND.CMD_WHEEL = RXData.ros2podo_data.CMD_WHEEL;
-    sharedROS->COMMAND.CMD_JOINT = RXData.ros2podo_data.CMD_JOINT;
+    sharedROS->COMMAND.CMD_GRIPPER  = RXData.ros2podo_data.CMD_GRIPPER;
+    sharedROS->COMMAND.CMD_WHEEL    = RXData.ros2podo_data.CMD_WHEEL;
+    sharedROS->COMMAND.CMD_JOINT    = RXData.ros2podo_data.CMD_JOINT;
     printf("CMD = %d, %d, %d\n",RXData.ros2podo_data.CMD_JOINT,RXData.ros2podo_data.CMD_GRIPPER,RXData.ros2podo_data.CMD_WHEEL);
 //    printf("ref WST = %f\n",RXData.ros2podo_data.Arm_action.joint[rosWST].reference);
     //here!

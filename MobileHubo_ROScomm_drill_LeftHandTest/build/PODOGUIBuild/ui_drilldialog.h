@@ -74,12 +74,15 @@ public:
     QPushButton *PB_RGripper_grasp;
     QLabel *label_RGripper;
     QPushButton *PB_RGripper_open;
-    QPushButton *PB_angleTest;
     QFrame *frame;
     QLabel *label_Save;
     QPushButton *PB_save;
     QPushButton *PB_done;
     QPushButton *PB_R_angle;
+    QFrame *frame_2;
+    QPushButton *PB_angleTest;
+    QPushButton *PB_gripperTest;
+    QLabel *label;
 
     void setupUi(QDialog *DrillDialog)
     {
@@ -276,9 +279,6 @@ public:
         PB_RGripper_open = new QPushButton(frame_gripper_right);
         PB_RGripper_open->setObjectName(QStringLiteral("PB_RGripper_open"));
         PB_RGripper_open->setGeometry(QRect(10, 40, 80, 22));
-        PB_angleTest = new QPushButton(DrillDialog);
-        PB_angleTest->setObjectName(QStringLiteral("PB_angleTest"));
-        PB_angleTest->setGeometry(QRect(30, 230, 80, 22));
         frame = new QFrame(DrillDialog);
         frame->setObjectName(QStringLiteral("frame"));
         frame->setGeometry(QRect(370, 230, 101, 101));
@@ -296,6 +296,20 @@ public:
         PB_R_angle = new QPushButton(DrillDialog);
         PB_R_angle->setObjectName(QStringLiteral("PB_R_angle"));
         PB_R_angle->setGeometry(QRect(560, 550, 80, 22));
+        frame_2 = new QFrame(DrillDialog);
+        frame_2->setObjectName(QStringLiteral("frame_2"));
+        frame_2->setGeometry(QRect(50, 290, 151, 121));
+        frame_2->setFrameShape(QFrame::StyledPanel);
+        frame_2->setFrameShadow(QFrame::Raised);
+        PB_angleTest = new QPushButton(frame_2);
+        PB_angleTest->setObjectName(QStringLiteral("PB_angleTest"));
+        PB_angleTest->setGeometry(QRect(30, 40, 80, 22));
+        PB_gripperTest = new QPushButton(frame_2);
+        PB_gripperTest->setObjectName(QStringLiteral("PB_gripperTest"));
+        PB_gripperTest->setGeometry(QRect(30, 70, 80, 22));
+        label = new QLabel(frame_2);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(10, 10, 131, 21));
 
         retranslateUi(DrillDialog);
 
@@ -348,11 +362,13 @@ public:
         PB_RGripper_grasp->setText(QApplication::translate("DrillDialog", "Close", 0));
         label_RGripper->setText(QApplication::translate("DrillDialog", "Gripper-RIGHT", 0));
         PB_RGripper_open->setText(QApplication::translate("DrillDialog", "Open", 0));
-        PB_angleTest->setText(QApplication::translate("DrillDialog", "AngleTest", 0));
         label_Save->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">SAVE</span></p></body></html>", 0));
         PB_save->setText(QApplication::translate("DrillDialog", "save", 0));
         PB_done->setText(QApplication::translate("DrillDialog", "done", 0));
         PB_R_angle->setText(QApplication::translate("DrillDialog", "angle", 0));
+        PB_angleTest->setText(QApplication::translate("DrillDialog", "AngleTest", 0));
+        PB_gripperTest->setText(QApplication::translate("DrillDialog", "gripper Test", 0));
+        label->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">TEST SECTION</span></p></body></html>", 0));
     } // retranslateUi
 
 };

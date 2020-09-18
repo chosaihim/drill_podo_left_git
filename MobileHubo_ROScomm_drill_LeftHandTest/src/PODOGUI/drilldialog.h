@@ -104,6 +104,8 @@ private slots:
 
     void on_PB_done_clicked();
 
+    void on_PB_gripperTest_clicked();
+
 private:
     Ui::DrillDialog *ui;
     LANDialog       *lanData;

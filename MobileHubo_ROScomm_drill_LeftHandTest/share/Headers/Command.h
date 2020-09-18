@@ -77,11 +77,15 @@ enum
     RIGHT_HANDUP,
     RIGHT_APPROACH,
     RIGHT_PUSH,
+    RIGHT_PUSH2,
+    RIGHT_PUSH3,
     RIGHT_PULL,
     RIGHT_RELEASE,
 
+    //TEST
     ANGLE_TEST,
     SET_ANGLE_TEST,
+    GRIPPER_TEST,
 
     //Save
     SAVE_SAVE,

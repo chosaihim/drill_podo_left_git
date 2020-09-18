@@ -370,25 +370,7 @@ void DrillDialog::on_PB_RGripper_grasp_clicked()
     pLAN->SendCommand(cmd);
 }
 
-void DrillDialog::on_PB_R_angle_clicked()
-{
-    USER_COMMAND cmd;
-    cmd.COMMAND_TARGET = ALNum_ROScommand;
-    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
-    cmd.COMMAND_DATA.USER_PARA_INT[0] = ANGLE_TEST;
-    pLAN->SendCommand(cmd);
-
-}
-
-void DrillDialog::on_PB_angleTest_clicked()
-{
-    USER_COMMAND cmd;
-    cmd.COMMAND_TARGET = ALNum_ROScommand;
-    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
-    cmd.COMMAND_DATA.USER_PARA_INT[0] = SET_ANGLE_TEST;
-    pLAN->SendCommand(cmd);
-}
-
+//SAVE
 void DrillDialog::on_PB_save_clicked()
 {
     USER_COMMAND cmd;
@@ -404,5 +386,35 @@ void DrillDialog::on_PB_done_clicked()
     cmd.COMMAND_TARGET = ALNum_ROScommand;
     cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
     cmd.COMMAND_DATA.USER_PARA_INT[0] = SAVE_DONE;
+    pLAN->SendCommand(cmd);
+}
+
+
+//TEST
+//RIGHT ANGLE TESTS
+void DrillDialog::on_PB_R_angle_clicked()
+{
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = ANGLE_TEST;
+    pLAN->SendCommand(cmd);
+}
+
+void DrillDialog::on_PB_angleTest_clicked()
+{
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = SET_ANGLE_TEST;
+    pLAN->SendCommand(cmd);
+}
+
+void DrillDialog::on_PB_gripperTest_clicked()
+{
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = GRIPPER_TEST;
     pLAN->SendCommand(cmd);
 }

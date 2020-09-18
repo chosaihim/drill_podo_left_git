@@ -324,34 +324,38 @@ typedef struct{
     //Different angle; Circular motion from up to Down
     //RIGHT_HANDUP
     double Handup_Handx     = 0.50;//0.40+0.05;
-    double Handup_Handy     = -0.246403 - 0.10;
-    double Handup_Handz     = 0.65+0.04;//0.51;
+    double Handup_Handy     = -0.246403 - 0.12;
+    double Handup_Handz     = 0.65;//0.65+0.04;//0.51;
     double Handup_time      = 4.0;
 
     //RIGHT_APPROACH
-    double Approach_Handx   = 0.55;//63;//Handup_Handx + 0.03;
-    double Approach_Handy   = -0.246403;//Handup_Handy;
-    double Approach_Handz   = 0.60+0.09;//Handup_Handz + 0.08 +0.01;
+    double Approach_Handx   = Handup_Handx + 0.05;//0.55;//63;//Handup_Handx + 0.03;
+    double Approach_Handy   = Handup_Handy + 0.12;//-0.246403;//Handup_Handy;
+    double Approach_Handz   = Handup_Handz - 0.03;//0.60+0.09;//Handup_Handz + 0.08 +0.01;
     double Approach_time    = 2.0;
 
 
     //RIGHT_PUSH
     double Push_Handx       = Approach_Handx +0.08;// + 0.1;
     double Push_Handy       = Approach_Handy;
-    double Push_Handz       = Approach_Handz - 0.20;
-    double Push_time        = 20.0; //30.0;
+    double Push_Handz       = Approach_Handz -0.20;
+    double Push_time        = 15.0; //30.0;
+
+    double Push_time1       = 7.0;
+    double Push_time2       = 5.0;
+    double Push_time3       = 8.0;
 
     //RIGHT_PULL
     double Pull_Handx       = Approach_Handx;
     double Pull_Handy       = Approach_Handy;
     double Pull_Handz       = Approach_Handz;
-    double Pull_time        = 10.0;
+    double Pull_time        = 5.0;
 
 
     //RIGHT_HANDBACK
-    double HandBack_Handx   = 0.40;
-    double HandBack_Handy   = -0.246403 -0.10;
-    double HandBack_Handz   = 0.69;//0.60-0.13;//+0.03;
+    double HandBack_Handx   = Handup_Handx;
+    double HandBack_Handy   = Handup_Handy-0.03;
+    double HandBack_Handz   = Handup_Handz;//0.60-0.13;//+0.03;
     double HandBack_time    = 4.0;
     /*
     //Circular motion from up to Down

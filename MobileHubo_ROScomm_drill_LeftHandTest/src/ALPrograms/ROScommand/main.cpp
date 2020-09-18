@@ -69,6 +69,9 @@ doubles RHori(4);
 doubles LHori(4);
 double  wait_time = 0.;
 
+double pre_x = 0, pre_y = 0, pre_z = 0;
+double pre_th = 0;
+
 //r2p sharedROS->r2p;
 void JoystickThread(void *){
     while(1){
@@ -904,6 +907,32 @@ void ToolTask_Supervisor()
                         Mode_TOOL = DRILL_PUT_WKRD;
                         break;
                     }
+                    case RIGHT_PUSH:
+                    {
+                        FILE_LOG(logSUCCESS) << "RIGHT_PUSH OK";
+
+                        //GRIPPER Close
+                        if(FLAG_Gripper != true)
+                        {
+                            //joint->RefreshToCurrentReference(GRIPPERonly);
+                            //usleep(50*1000);
+                            FLAG_Gripper  = true;
+                            MODE_Gripper  = GUI_GRIPPER_CLOSE_QUATER;
+                            SIDE_Gripper  = GUI_GRIPPER_RIGHT;
+                            MODE_RGripper = GUI_GRIPPER_CLOSE_QUATER;
+
+                            DESIRED_Gripper = 0.;
+
+                            CalculateLIMITGripper();
+                        }else
+                        {
+                            FILE_LOG(logERROR) << "Duplicate Gripper Commands";
+                            sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
+                        }
+
+                        Mode_TOOL = DRILL_NOTHING;
+                        break;
+                    }
                 }
                 WaitCount = 0;
             }
@@ -1471,9 +1500,7 @@ void ToolTask_Supervisor()
 
 
             //mode1
-//            SetOriHand(RHori,-90.0,0.0);
-//            SetOriHand_YP(RHori,-90.0,90.0);
-            SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
+            SetOriHand_PYP(RHori,-90.0,-90.0,25.0);
 //            SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,-20.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
 
@@ -1481,12 +1508,25 @@ void ToolTask_Supervisor()
 //            SetOriHand(RHori,-90.0,90.0);
 //            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
 
+            //GRIPPER OPEN
+            if(FLAG_Gripper != true)
+            {
+                //joint->RefreshToCurrentReference(GRIPPERonly);
+                //usleep(50*1000);
+                FLAG_Gripper  = true;
+                MODE_Gripper  = GUI_GRIPPER_OPEN_HALF;
+                SIDE_Gripper  = GUI_GRIPPER_RIGHT;
+                MODE_RGripper = GUI_GRIPPER_OPEN_HALF;
 
-//            SetOriHand(RHori,-90.0,0.0);
-//            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+                DESIRED_Gripper = 0.;
 
-//            SetOriHand_YP(RHori,-180.0,-90.0);
-//            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
+                CalculateLIMITGripper();
+            }else
+            {
+                FILE_LOG(logERROR) << "Duplicate Gripper Commands";
+                sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
+            }
+
 
             Mode_TOOL = DRILL_NOTHING;
 
@@ -1500,21 +1540,10 @@ void ToolTask_Supervisor()
             RHpos[1] = drill_in.Push_Handy;
             RHpos[2] = drill_in.Push_Handz;
 
-//            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Push_time);
-
-//            SetOriHand(RHori,-90.0,0.0);
-//            SetOriHand_YP(RHori,-90.0,100.0);
-//            SetOriHand_PYP(RHori,-90.0,90.0,-20.0);
-//            WBmotion->addRHOriInfo(RHori, drill_in.Push_time);
-
-            cout << "111 quat: (" << WBmotion->qRH_4x1[0] << ", "
-                              << WBmotion->qRH_4x1[1] << ", "
-                              << WBmotion->qRH_4x1[2] << ", "
-                              << WBmotion->qRH_4x1[3] << ") " << endl;
-
             //variables
             //Time
             double pushTime_count = drill_in.Push_time * 200;
+            double pullTime_count = 3.0 * 200;
 
             //angle
             double th_start = (180 - 15) * D2R;
@@ -1532,69 +1561,108 @@ void ToolTask_Supervisor()
             double hand_yaw = 90;
             double d_hYaw   = 35 / pushTime_count;
 
-            double timecount_wrist = pushTime_count * 25/((th_end - th_start)*R2D);
-            double th_wrist = 0;
-            double d_th_wrist = (45 / timecount_wrist);
+            double timecount_wrist = pushTime_count * 45/((th_end - th_start)*R2D);//25/((th_end - th_start)*R2D);
+            double th_wrist = 0;//-20;//0;
+            double d_th_wrist = (45/timecount_wrist);//(45 / timecount_wrist);
+            cout<< "timecount_wrist = " << timecount_wrist << endl;
+            cout<< "d_th_wrist = " << d_th_wrist << endl;
 
-            int local_h_flag = false;
 
-            while(pushTime_count--)
+            int loop_count = pushTime_count + pullTime_count;
+            int pull_flag  = false;
+            int grasp_flag = false;
+
+            while(loop_count--)
             {
-                th = th + d_th;
+
+                if(loop_count > pushTime_count/2 && loop_count < (pushTime_count/2 + pullTime_count/2))
+                {//pull back
+                    th = th - d_th;
+                    pull_flag = true;
+                }
+                else
+                {
+                    th = th + d_th;
+                    pull_flag = false;
+                }
+
                 x  = x0 + r * cos(th);
                 z  = z0 + r * sin(th);
+
 
                 WBmotion->addRHPosInfo(x, RHpos[1], z, 0.005);
 
 
-                if((180 + 20)*D2R > th){
-                    SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,0.0);
-                    WBmotion->addRHOriInfo(RHori, 0.005);
+                if((180)*D2R > th){
+                    SetOriHand_PYPR(RHori,-90.0,-90.0,25.0,0.0);//-20.0);
+                    WBmotion->addRHOriInfo(RHori, 0.005);//6.0);
                 }else if((180 + 45)*D2R > th){
-//                    if(!local_h_flag){
-//                        local_h_flag = true;
-
-
-//                        joint->RefreshToCurrentReference(GRIPPERonly);
-//                        FLAG_Gripper = true;
-//                        MODE_LGripper = GRIPPER_CLOSE_QUATER;
-//                        MODE_RGripper = MODE_Gripper;
-//                        CalculateLIMITGripper();
-//                    }
-
-
-//                    FLAG_Gripper = true;
-
+                    if(pull_flag)
+                        th_wrist += 2*d_th_wrist;
                     th_wrist -= d_th_wrist;
-                    SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,th_wrist); //th*R2D-270.0);
+                    SetOriHand_PYPR(RHori,-90.0,-90.0,25.0,th_wrist); //th*R2D-270.0);
                     WBmotion->addRHOriInfo(RHori, 0.005);
                 }
                 else{
-                    SetOriHand_PYPR(RHori,-90.0,-90.0,20.0,th*R2D-270.0);
+                    /*if(!grasp_flag)
+                    {
+                        grasp_flag = true;
+                        //GRIPPER Close
+                        if(FLAG_Gripper != true)
+                        {
+                            //joint->RefreshToCurrentReference(GRIPPERonly);
+                            //usleep(50*1000);
+                            FLAG_Gripper  = true;
+                            MODE_Gripper  = GUI_GRIPPER_CLOSE_QUATER;
+                            SIDE_Gripper  = GUI_GRIPPER_RIGHT;
+                            MODE_RGripper = GUI_GRIPPER_CLOSE_QUATER;
+
+                            DESIRED_Gripper = 0.;
+
+                            CalculateLIMITGripper();
+                        }else
+                        {
+                            FILE_LOG(logERROR) << "Duplicate Gripper Commands";
+                            sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
+                        }
+                    }
+*/
+                    SetOriHand_PYPR(RHori,-90.0,-90.0,25.0,th*R2D-270.0);
                     WBmotion->addRHOriInfo(RHori, 0.005);
                 }
             }
             cout << "(x,z) = (" << x << ", " << z << ")" << endl;
 
-            Mode_TOOL = DRILL_NOTHING;
+//            Mode_TOOL = DRILL_NOTHING;
+            SetWaitTime(RIGHT_PUSH, (drill_in.Push_time)*60/100);
 
             break;
         }
         case RIGHT_PULL:
         {
-
-//            FLAG_Gripper = false;
-
-
-            cout << "222 quat: (" << WBmotion->qRH_4x1[0] << ", "
-                              << WBmotion->qRH_4x1[1] << ", "
-                              << WBmotion->qRH_4x1[2] << ", "
-                              << WBmotion->qRH_4x1[3] << ") " << endl;
-
             FILE_LOG(logSUCCESS) << "RIGHT_PULL";
 
+            //GRIPPER OPEN
+            if(FLAG_Gripper != true)
+            {
+                //joint->RefreshToCurrentReference(GRIPPERonly);
+                //usleep(50*1000);
+                FLAG_Gripper  = true;
+                MODE_Gripper  = GUI_GRIPPER_OPEN;
+                SIDE_Gripper  = GUI_GRIPPER_RIGHT;
+                MODE_RGripper = GUI_GRIPPER_OPEN;
+
+                DESIRED_Gripper = 0.;
+
+                CalculateLIMITGripper();
+            }else
+            {
+                FILE_LOG(logERROR) << "Duplicate Gripper Commands";
+                sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
+            }
 
 
+            //PULL the lever
             RHpos[0] = drill_in.Pull_Handx;
             RHpos[1] = drill_in.Pull_Handy;
             RHpos[2] = drill_in.Pull_Handz;
@@ -1603,7 +1671,7 @@ void ToolTask_Supervisor()
 
 //            SetOriHand(RHori,-90.0,0.0);
 //            SetOriHand_YP(RHori,-90.0,90.0);
-            SetOriHand_PYP(RHori,-90.0,-90.0,20.0);
+            SetOriHand_PYP(RHori,-90.0,-90.0,25.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Pull_time);
 
             Mode_TOOL = DRILL_NOTHING;
@@ -1613,6 +1681,25 @@ void ToolTask_Supervisor()
         case RIGHT_RELEASE:
         {
             FILE_LOG(logSUCCESS) << "RIGHT_RELEASE";
+
+            //GRIPPER CLOSE
+            if(FLAG_Gripper != true)
+            {
+                //joint->RefreshToCurrentReference(GRIPPERonly);
+                //usleep(50*1000);
+                FLAG_Gripper  = true;
+                MODE_Gripper  = GUI_GRIPPER_CLOSE;
+                SIDE_Gripper  = GUI_GRIPPER_RIGHT;
+                MODE_RGripper = GUI_GRIPPER_CLOSE;
+
+                DESIRED_Gripper = 0.;
+
+                CalculateLIMITGripper();
+            }else
+            {
+                FILE_LOG(logERROR) << "Duplicate Gripper Commands";
+                sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
+            }
 
             RHpos[0] = drill_in.HandBack_Handx;
             RHpos[1] = drill_in.HandBack_Handy;
@@ -1673,7 +1760,6 @@ void ToolTask_Supervisor()
 
             //END HAND MOTION
 
-
 //            SetOriHand(RHori,90.0,0.0);
             SetOriHand_PYPR(RHori, -90.0, -90.0, 20.0, -45.0);
 //            SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
@@ -1682,6 +1768,43 @@ void ToolTask_Supervisor()
 //            SetOriHand_PYP(LHori,-90.0,90.0,0.0);
 //            WBmotion->addLHOriInfo(LHori, 5.0);
 
+
+            Mode_TOOL = DRILL_NOTHING;
+            break;
+        }
+        case GRIPPER_TEST:
+        {
+            FILE_LOG(logSUCCESS) << ">>> GRIPPER_TEST" ;
+
+            RHpos[0] = drill_in.Handup_Handx;
+            RHpos[1] = drill_in.Handup_Handy;
+            RHpos[2] = drill_in.Handup_Handz;
+
+            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Handup_time);
+
+            //mode1
+            SetOriHand_PYP(RHori,-90.0,-90.0,0.0);
+            WBmotion->addRHOriInfo(RHori, drill_in.Handup_time);
+
+
+            //GRIPPER OPEN
+            if(FLAG_Gripper != true)
+            {
+                //joint->RefreshToCurrentReference(GRIPPERonly);
+                //usleep(50*1000);
+                FLAG_Gripper  = true;
+                MODE_Gripper  = GUI_GRIPPER_OPEN_HALF;
+                SIDE_Gripper  = GUI_GRIPPER_RIGHT;
+                MODE_RGripper = GUI_GRIPPER_OPEN_HALF;
+
+                DESIRED_Gripper = 0.;
+
+                CalculateLIMITGripper();
+            }else
+            {
+                FILE_LOG(logERROR) << "Duplicate Gripper Commands";
+                sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
+            }
 
             Mode_TOOL = DRILL_NOTHING;
             break;
