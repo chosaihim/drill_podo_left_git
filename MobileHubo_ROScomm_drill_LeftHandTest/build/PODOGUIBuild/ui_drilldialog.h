@@ -74,15 +74,19 @@ public:
     QPushButton *PB_RGripper_grasp;
     QLabel *label_RGripper;
     QPushButton *PB_RGripper_open;
+    QPushButton *PB_R_angle;
+    QPushButton *PB_setROSCoord;
+    QLabel *label;
+    QPushButton *PB_pushSeq;
+    QPushButton *PB_pullSeq;
+    QLabel *label_2;
+    QFrame *line;
+    QPushButton *PB_noROS;
+    QPushButton *PB_angleTest;
     QFrame *frame;
     QLabel *label_Save;
     QPushButton *PB_save;
     QPushButton *PB_done;
-    QPushButton *PB_R_angle;
-    QFrame *frame_2;
-    QPushButton *PB_angleTest;
-    QPushButton *PB_gripperTest;
-    QLabel *label;
 
     void setupUi(QDialog *DrillDialog)
     {
@@ -236,7 +240,7 @@ public:
         PB_QuatClose->setGeometry(QRect(360, 70, 80, 22));
         RIGHT_HAND = new QFrame(DrillDialog);
         RIGHT_HAND->setObjectName(QStringLiteral("RIGHT_HAND"));
-        RIGHT_HAND->setGeometry(QRect(10, 90, 461, 131));
+        RIGHT_HAND->setGeometry(QRect(10, 90, 461, 261));
         RIGHT_HAND->setFrameShape(QFrame::StyledPanel);
         RIGHT_HAND->setFrameShadow(QFrame::Raised);
         PB_R_HandUp = new QPushButton(RIGHT_HAND);
@@ -247,10 +251,9 @@ public:
         label_RightHand->setGeometry(QRect(10, 10, 141, 21));
         PB_R_Approach = new QPushButton(RIGHT_HAND);
         PB_R_Approach->setObjectName(QStringLiteral("PB_R_Approach"));
-        PB_R_Approach->setGeometry(QRect(20, 70, 80, 22));
+        PB_R_Approach->setGeometry(QRect(20, 100, 80, 22));
         PB_R_Push = new QPushButton(RIGHT_HAND);
         PB_R_Push->setObjectName(QStringLiteral("PB_R_Push"));
-        PB_R_Push->setEnabled(false);
         PB_R_Push->setGeometry(QRect(110, 40, 80, 22));
         PB_R_Pull = new QPushButton(RIGHT_HAND);
         PB_R_Pull->setObjectName(QStringLiteral("PB_R_Pull"));
@@ -260,10 +263,10 @@ public:
         PB_R_Release->setGeometry(QRect(110, 100, 80, 22));
         PB_R_HalfOpen = new QPushButton(RIGHT_HAND);
         PB_R_HalfOpen->setObjectName(QStringLiteral("PB_R_HalfOpen"));
-        PB_R_HalfOpen->setGeometry(QRect(280, 100, 80, 22));
+        PB_R_HalfOpen->setGeometry(QRect(270, 100, 80, 22));
         PB_R_QuatClose = new QPushButton(RIGHT_HAND);
         PB_R_QuatClose->setObjectName(QStringLiteral("PB_R_QuatClose"));
-        PB_R_QuatClose->setGeometry(QRect(370, 100, 80, 22));
+        PB_R_QuatClose->setGeometry(QRect(360, 100, 80, 22));
         frame_gripper_right = new QFrame(RIGHT_HAND);
         frame_gripper_right->setObjectName(QStringLiteral("frame_gripper_right"));
         frame_gripper_right->setGeometry(QRect(260, 20, 191, 71));
@@ -279,9 +282,40 @@ public:
         PB_RGripper_open = new QPushButton(frame_gripper_right);
         PB_RGripper_open->setObjectName(QStringLiteral("PB_RGripper_open"));
         PB_RGripper_open->setGeometry(QRect(10, 40, 80, 22));
+        PB_R_angle = new QPushButton(RIGHT_HAND);
+        PB_R_angle->setObjectName(QStringLiteral("PB_R_angle"));
+        PB_R_angle->setGeometry(QRect(20, 70, 80, 22));
+        PB_setROSCoord = new QPushButton(RIGHT_HAND);
+        PB_setROSCoord->setObjectName(QStringLiteral("PB_setROSCoord"));
+        PB_setROSCoord->setGeometry(QRect(20, 190, 80, 22));
+        label = new QLabel(RIGHT_HAND);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(20, 170, 211, 16));
+        PB_pushSeq = new QPushButton(RIGHT_HAND);
+        PB_pushSeq->setObjectName(QStringLiteral("PB_pushSeq"));
+        PB_pushSeq->setEnabled(false);
+        PB_pushSeq->setGeometry(QRect(20, 220, 80, 22));
+        PB_pullSeq = new QPushButton(RIGHT_HAND);
+        PB_pullSeq->setObjectName(QStringLiteral("PB_pullSeq"));
+        PB_pullSeq->setEnabled(false);
+        PB_pullSeq->setGeometry(QRect(110, 220, 80, 22));
+        label_2 = new QLabel(RIGHT_HAND);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(20, 140, 59, 31));
+        line = new QFrame(RIGHT_HAND);
+        line->setObjectName(QStringLiteral("line"));
+        line->setGeometry(QRect(20, 130, 191, 16));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        PB_noROS = new QPushButton(RIGHT_HAND);
+        PB_noROS->setObjectName(QStringLiteral("PB_noROS"));
+        PB_noROS->setGeometry(QRect(110, 190, 80, 22));
+        PB_angleTest = new QPushButton(DrillDialog);
+        PB_angleTest->setObjectName(QStringLiteral("PB_angleTest"));
+        PB_angleTest->setGeometry(QRect(10, 420, 80, 22));
         frame = new QFrame(DrillDialog);
         frame->setObjectName(QStringLiteral("frame"));
-        frame->setGeometry(QRect(370, 230, 101, 101));
+        frame->setGeometry(QRect(370, 360, 101, 101));
         frame->setFrameShape(QFrame::StyledPanel);
         frame->setFrameShadow(QFrame::Raised);
         label_Save = new QLabel(frame);
@@ -293,23 +327,6 @@ public:
         PB_done = new QPushButton(frame);
         PB_done->setObjectName(QStringLiteral("PB_done"));
         PB_done->setGeometry(QRect(10, 70, 80, 22));
-        PB_R_angle = new QPushButton(DrillDialog);
-        PB_R_angle->setObjectName(QStringLiteral("PB_R_angle"));
-        PB_R_angle->setGeometry(QRect(560, 550, 80, 22));
-        frame_2 = new QFrame(DrillDialog);
-        frame_2->setObjectName(QStringLiteral("frame_2"));
-        frame_2->setGeometry(QRect(50, 290, 151, 121));
-        frame_2->setFrameShape(QFrame::StyledPanel);
-        frame_2->setFrameShadow(QFrame::Raised);
-        PB_angleTest = new QPushButton(frame_2);
-        PB_angleTest->setObjectName(QStringLiteral("PB_angleTest"));
-        PB_angleTest->setGeometry(QRect(30, 40, 80, 22));
-        PB_gripperTest = new QPushButton(frame_2);
-        PB_gripperTest->setObjectName(QStringLiteral("PB_gripperTest"));
-        PB_gripperTest->setGeometry(QRect(30, 70, 80, 22));
-        label = new QLabel(frame_2);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(10, 10, 131, 21));
 
         retranslateUi(DrillDialog);
 
@@ -362,13 +379,17 @@ public:
         PB_RGripper_grasp->setText(QApplication::translate("DrillDialog", "Close", 0));
         label_RGripper->setText(QApplication::translate("DrillDialog", "Gripper-RIGHT", 0));
         PB_RGripper_open->setText(QApplication::translate("DrillDialog", "Open", 0));
+        PB_R_angle->setText(QApplication::translate("DrillDialog", "angle", 0));
+        PB_setROSCoord->setText(QApplication::translate("DrillDialog", "ROS Coord", 0));
+        label->setText(QApplication::translate("DrillDialog", "Set hands Up Coordinates w/ ROS", 0));
+        PB_pushSeq->setText(QApplication::translate("DrillDialog", "PUSH", 0));
+        PB_pullSeq->setText(QApplication::translate("DrillDialog", "PULL", 0));
+        label_2->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:14pt; font-weight:600;\">ROS</span></p></body></html>", 0));
+        PB_noROS->setText(QApplication::translate("DrillDialog", "NO ROS", 0));
+        PB_angleTest->setText(QApplication::translate("DrillDialog", "AngleTest", 0));
         label_Save->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:16pt; font-weight:600;\">SAVE</span></p></body></html>", 0));
         PB_save->setText(QApplication::translate("DrillDialog", "save", 0));
         PB_done->setText(QApplication::translate("DrillDialog", "done", 0));
-        PB_R_angle->setText(QApplication::translate("DrillDialog", "angle", 0));
-        PB_angleTest->setText(QApplication::translate("DrillDialog", "AngleTest", 0));
-        PB_gripperTest->setText(QApplication::translate("DrillDialog", "gripper Test", 0));
-        label->setText(QApplication::translate("DrillDialog", "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">TEST SECTION</span></p></body></html>", 0));
     } // retranslateUi
 
 };

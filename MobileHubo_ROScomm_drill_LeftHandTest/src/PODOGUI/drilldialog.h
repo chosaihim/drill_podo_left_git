@@ -106,6 +106,14 @@ private slots:
 
     void on_PB_gripperTest_clicked();
 
+    void on_PB_setROSCoord_clicked();
+
+    void on_PB_pushSeq_clicked();
+
+    void on_PB_pullSeq_clicked();
+
+    void on_PB_noROS_clicked();
+
 private:
     Ui::DrillDialog *ui;
     LANDialog       *lanData;

@@ -91,6 +91,12 @@ enum
     SAVE_SAVE,
     SAVE_DONE,
 
+    //ROS
+    ROS_COORD,
+    ROS_NO,
+    PUSH_SEQ,
+    PULL_SEQ,
+
 };
 
 #endif // COMMAND_H

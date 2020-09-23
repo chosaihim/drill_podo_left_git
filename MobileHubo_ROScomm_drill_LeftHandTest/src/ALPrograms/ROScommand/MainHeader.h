@@ -256,6 +256,16 @@ void CheckArguments(int argc, char *argv[]){
     cout << endl;
 }
 
+//ROS
+int    ROS_FLAG  = false;
+
+double ROS_Handx = 0;
+double ROS_Handy = 0;
+double ROS_Handz = 0;
+
+double ROS_Basex = 0;
+double ROS_Basey = 0;
+double ROS_Basez = 0;
 
 typedef struct{
 
@@ -323,17 +333,16 @@ typedef struct{
     //RIGHT HAND
     //Different angle; Circular motion from up to Down
     //RIGHT_HANDUP
-    double Handup_Handx     = 0.50;//0.40+0.05;
+    double Handup_Handx     =  0.50;//0.40+0.05;
     double Handup_Handy     = -0.246403 - 0.12;
-    double Handup_Handz     = 0.65;//0.65+0.04;//0.51;
-    double Handup_time      = 4.0;
+    double Handup_Handz     =  0.65;//0.65+0.04;//0.51;
+    double Handup_time      =  4.0;
 
     //RIGHT_APPROACH
     double Approach_Handx   = Handup_Handx + 0.05;//0.55;//63;//Handup_Handx + 0.03;
     double Approach_Handy   = Handup_Handy + 0.12;//-0.246403;//Handup_Handy;
     double Approach_Handz   = Handup_Handz - 0.03;//0.60+0.09;//Handup_Handz + 0.08 +0.01;
     double Approach_time    = 2.0;
-
 
     //RIGHT_PUSH
     double Push_Handx       = Approach_Handx +0.08;// + 0.1;
@@ -350,7 +359,6 @@ typedef struct{
     double Pull_Handy       = Approach_Handy;
     double Pull_Handz       = Approach_Handz;
     double Pull_time        = 5.0;
-
 
     //RIGHT_HANDBACK
     double HandBack_Handx   = Handup_Handx;

@@ -418,3 +418,59 @@ void DrillDialog::on_PB_gripperTest_clicked()
     cmd.COMMAND_DATA.USER_PARA_INT[0] = GRIPPER_TEST;
     pLAN->SendCommand(cmd);
 }
+
+//ROS_CONNECTION
+void DrillDialog::on_PB_setROSCoord_clicked()
+{
+    ui->PB_setROSCoord->setDisabled(true);
+    ui->PB_noROS->setDisabled(false);
+
+    ui->PB_pushSeq->setDisabled(false);
+
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = ROS_COORD;
+    pLAN->SendCommand(cmd);
+}
+
+void DrillDialog::on_PB_noROS_clicked()
+{
+
+    ui->PB_setROSCoord->setDisabled(false);
+    ui->PB_noROS->setDisabled(true);
+
+    ui->PB_pushSeq->setDisabled(true);
+    ui->PB_pullSeq->setDisabled(true);
+
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = ROS_NO;
+    pLAN->SendCommand(cmd);
+}
+
+void DrillDialog::on_PB_pushSeq_clicked()
+{
+    ui->PB_pushSeq->setDisabled(true);
+    ui->PB_pullSeq->setDisabled(false);
+
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = PUSH_SEQ;
+    pLAN->SendCommand(cmd);
+}
+
+void DrillDialog::on_PB_pullSeq_clicked()
+{
+    ui->PB_pushSeq->setDisabled(false);
+    ui->PB_pullSeq->setDisabled(true);
+
+    USER_COMMAND cmd;
+    cmd.COMMAND_TARGET = ALNum_ROScommand;
+    cmd.COMMAND_DATA.USER_COMMAND = BASICCMD_DRILL;
+    cmd.COMMAND_DATA.USER_PARA_INT[0] = PULL_SEQ;
+    pLAN->SendCommand(cmd);
+}
+

@@ -371,6 +371,21 @@ int main(int argc, char *argv[])
 
                 break;
             }
+            case MODE_DRILL:
+            {
+                printf("MODE_DRILL\n");
+
+                //REFERECE: WBmotion->addRHPosInfo(sharedROS->Arm_action.wbik[tempNum].Goal_pos[0], sharedROS->Arm_action.wbik[tempNum].Goal_pos[1], sharedROS->Arm_action.wbik[tempNum].Goal_pos[2], sharedROS->Arm_action.wbik[tempNum].GoalmsTime/1000);
+
+                ROS_Handx = sharedROS->Arm_action.wbik[RIGHT_HAND].Goal_pos[0];
+                ROS_Handy = sharedROS->Arm_action.wbik[RIGHT_HAND].Goal_pos[1];
+                ROS_Handz = sharedROS->Arm_action.wbik[RIGHT_HAND].Goal_pos[2];
+
+                cout << "##ROS Hand(x,y,z): (" << ROS_Handx << ", " << ROS_Handy << ", " << ROS_Handz << ")" << endl;
+
+                sharedROS->COMMAND.CMD_JOINT = MODE_BREAK;
+                break;
+            }
         }
 
         if(sharedROS->COMMAND.CMD_GRIPPER != GRIPPER_BREAK)
@@ -933,6 +948,42 @@ void ToolTask_Supervisor()
                         Mode_TOOL = DRILL_NOTHING;
                         break;
                     }
+                    case PUSH_SEQ:
+                    {
+                        FILE_LOG(logSUCCESS) << "PUSH_SEQ OK";
+
+                        Mode_TOOL = RIGHT_HANDUP;
+                        break;
+                    }
+                    case RIGHT_HANDUP:
+                    {
+                        FILE_LOG(logSUCCESS) << "RIGHT_HANDUP OK";
+
+                        Mode_TOOL = RIGHT_APPROACH;
+                        break;
+                    }
+                    case RIGHT_APPROACH:
+                    {
+                        FILE_LOG(logSUCCESS) << "RIGHT_APPROACH OK";
+
+                        Mode_TOOL = RIGHT_PUSH;
+                        break;
+                    }
+                    case PULL_SEQ:
+                    {
+                        FILE_LOG(logSUCCESS) << "PULL_SEQ OK";
+
+                        Mode_TOOL = RIGHT_PULL;
+                        break;
+                    }
+                    case RIGHT_PULL:
+                    {
+                        FILE_LOG(logSUCCESS) << "PULL_SEQ OK";
+
+                        Mode_TOOL = RIGHT_RELEASE;
+                        break;
+                    }
+
                 }
                 WaitCount = 0;
             }
@@ -1361,7 +1412,7 @@ void ToolTask_Supervisor()
 
             break;
         }
-/*      //RIGHT HAND YAW 0
+ /*      //RIGHT HAND YAW 0
         case RIGHT_HANDUP:
         {
             FILE_LOG(logSUCCESS) << "RIGHT_HANDUP";
@@ -1484,7 +1535,10 @@ void ToolTask_Supervisor()
 //            SetOriHand(RHori,-90.0,90.0);
 //            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
 
-            Mode_TOOL = DRILL_NOTHING;
+            if(Mode_cont == PUSH_SEQ)
+                SetWaitTime(RIGHT_HANDUP, drill_in.Handup_time);
+            else
+                Mode_TOOL = DRILL_NOTHING;
 
             break;
         }
@@ -1527,8 +1581,10 @@ void ToolTask_Supervisor()
                 sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
             }
 
-
-            Mode_TOOL = DRILL_NOTHING;
+            if(Mode_cont == PUSH_SEQ)
+                SetWaitTime(RIGHT_APPROACH, drill_in.Approach_time);
+            else
+                Mode_TOOL = DRILL_NOTHING;
 
             break;
         }
@@ -1564,8 +1620,8 @@ void ToolTask_Supervisor()
             double timecount_wrist = pushTime_count * 45/((th_end - th_start)*R2D);//25/((th_end - th_start)*R2D);
             double th_wrist = 0;//-20;//0;
             double d_th_wrist = (45/timecount_wrist);//(45 / timecount_wrist);
-            cout<< "timecount_wrist = " << timecount_wrist << endl;
-            cout<< "d_th_wrist = " << d_th_wrist << endl;
+//            cout<< "timecount_wrist = " << timecount_wrist << endl;
+//            cout<< "d_th_wrist = " << d_th_wrist << endl;
 
 
             int loop_count = pushTime_count + pullTime_count;
@@ -1604,34 +1660,11 @@ void ToolTask_Supervisor()
                     WBmotion->addRHOriInfo(RHori, 0.005);
                 }
                 else{
-                    /*if(!grasp_flag)
-                    {
-                        grasp_flag = true;
-                        //GRIPPER Close
-                        if(FLAG_Gripper != true)
-                        {
-                            //joint->RefreshToCurrentReference(GRIPPERonly);
-                            //usleep(50*1000);
-                            FLAG_Gripper  = true;
-                            MODE_Gripper  = GUI_GRIPPER_CLOSE_QUATER;
-                            SIDE_Gripper  = GUI_GRIPPER_RIGHT;
-                            MODE_RGripper = GUI_GRIPPER_CLOSE_QUATER;
-
-                            DESIRED_Gripper = 0.;
-
-                            CalculateLIMITGripper();
-                        }else
-                        {
-                            FILE_LOG(logERROR) << "Duplicate Gripper Commands";
-                            sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
-                        }
-                    }
-*/
                     SetOriHand_PYPR(RHori,-90.0,-90.0,25.0,th*R2D-270.0);
                     WBmotion->addRHOriInfo(RHori, 0.005);
                 }
             }
-            cout << "(x,z) = (" << x << ", " << z << ")" << endl;
+//            cout << "(x,z) = (" << x << ", " << z << ")" << endl;
 
 //            Mode_TOOL = DRILL_NOTHING;
             SetWaitTime(RIGHT_PUSH, (drill_in.Push_time)*60/100);
@@ -1661,7 +1694,6 @@ void ToolTask_Supervisor()
                 sharedROS->COMMAND.CMD_GRIPPER = GRIPPER_BREAK;
             }
 
-
             //PULL the lever
             RHpos[0] = drill_in.Pull_Handx;
             RHpos[1] = drill_in.Pull_Handy;
@@ -1674,7 +1706,10 @@ void ToolTask_Supervisor()
             SetOriHand_PYP(RHori,-90.0,-90.0,25.0);
             WBmotion->addRHOriInfo(RHori, drill_in.Pull_time);
 
-            Mode_TOOL = DRILL_NOTHING;
+            if(Mode_cont == PULL_SEQ)
+                SetWaitTime(RIGHT_PULL, drill_in.Pull_time);
+            else
+                Mode_TOOL = DRILL_NOTHING;
 
             break;
         }
@@ -1709,6 +1744,7 @@ void ToolTask_Supervisor()
 
             SetOriHand_YP(RHori,-90.0,-90.0);
             WBmotion->addRHOriInfo(RHori, drill_in.HandBack_time);
+
             Mode_TOOL = DRILL_NOTHING;
 
             break;
@@ -1821,11 +1857,104 @@ void ToolTask_Supervisor()
             Mode_TOOL = DRILL_NOTHING;
             break;
         }
+        case ROS_COORD:
+        {
+            FILE_LOG(logSUCCESS) << "ROS_COORD";
+            ROS_FLAG  = true;
+            Mode_TOOL = DRILL_NOTHING;
+            break;
+        }
+        case ROS_NO:
+        {
+            FILE_LOG(logSUCCESS) << "ROS_NO";
+            ROS_FLAG  = false;
+
+            //RIGHT_HANDUP
+            drill_in.Handup_Handx     = 0.50;//0.40+0.05;
+            drill_in.Handup_Handy     = -0.246403 - 0.12;
+            drill_in.Handup_Handz     = 0.65;//0.65+0.04;//0.51;
+
+            //RIGHT_APPROACH
+            drill_in.Approach_Handx   = drill_in.Handup_Handx + 0.05;//0.55;//63;//Handup_Handx + 0.03;
+            drill_in.Approach_Handy   = drill_in.Handup_Handy + 0.12;//-0.246403;//Handup_Handy;
+            drill_in.Approach_Handz   = drill_in.Handup_Handz - 0.03;//0.60+0.09;//Handup_Handz + 0.08 +0.01;
+
+            //RIGHT_PUSH
+            drill_in.Push_Handx       = drill_in.Approach_Handx + 0.08;// + 0.1;
+            drill_in.Push_Handy       = drill_in.Approach_Handy;
+            drill_in.Push_Handz       = drill_in.Approach_Handz - 0.20;
+
+            //RIGHT_PULL
+            drill_in.Pull_Handx       = drill_in.Approach_Handx;
+            drill_in.Pull_Handy       = drill_in.Approach_Handy;
+            drill_in.Pull_Handz       = drill_in.Approach_Handz;
+
+            //RIGHT_HANDBACK
+            drill_in.HandBack_Handx   = drill_in.Handup_Handx;
+            drill_in.HandBack_Handy   = drill_in.Handup_Handy - 0.03;
+            drill_in.HandBack_Handz   = drill_in.Handup_Handz;//0.60-0.13;//+0.03;
+
+            Mode_TOOL = DRILL_NOTHING;
+            break;
+        }
+        case PUSH_SEQ:
+        {
+            FILE_LOG(logSUCCESS) << "PUSH_SEQ";
+            Mode_cont = PUSH_SEQ;
+
+            cout << "ROS (x,y,z) = (" << ROS_Handx << ", " << ROS_Handy << ", " << ROS_Handz << ")" << endl;
+
+            if(ROS_Handx == 0 && ROS_Handy == 0 && ROS_Handz == 0)
+            {
+                ROS_Handx = drill_in.Handup_Handx;
+                ROS_Handy = drill_in.Handup_Handy;
+                ROS_Handz = drill_in.Handup_Handz;
+            }
+
+            //RIGHT_HANDUP
+            drill_in.Handup_Handx    = ROS_Handx;
+            drill_in.Handup_Handy    = ROS_Handy - 0.12;
+            drill_in.Handup_Handz    = ROS_Handz;
+
+            //RIGHT_APPROACH
+            drill_in.Approach_Handx  = drill_in.Handup_Handx + 0.05;
+            drill_in.Approach_Handy  = drill_in.Handup_Handy + 0.12;
+            drill_in.Approach_Handz  = drill_in.Handup_Handz - 0.03;
+
+            //RIGHT_PUSH
+            drill_in.Push_Handx      = drill_in.Approach_Handx + 0.08;
+            drill_in.Push_Handy      = drill_in.Approach_Handy;
+            drill_in.Push_Handz      = drill_in.Approach_Handz - 0.20;
+
+            //RIGHT_PULL
+            drill_in.Pull_Handx      = drill_in.Approach_Handx;
+            drill_in.Pull_Handy      = drill_in.Approach_Handy;
+            drill_in.Pull_Handz      = drill_in.Approach_Handz;
+
+            //RIGHT_HANDBACK
+            drill_in.HandBack_Handx  = drill_in.Handup_Handx;
+            drill_in.HandBack_Handy  = drill_in.Handup_Handy - 0.03;
+            drill_in.HandBack_Handz  = drill_in.Handup_Handz;
+
+            //Mode_TOOL = DRILL_NOTHING;
+            SetWaitTime(PUSH_SEQ, 0.0);
+            break;
+        }
+        case PULL_SEQ:
+        {
+            FILE_LOG(logSUCCESS) << "PULL_SEQ";
+            Mode_cont = PULL_SEQ;
+
+            //Mode_TOOL = DRILL_NOTHING;
+            SetWaitTime(PULL_SEQ, 0.0);
+            break;
+        }
         case DRILL_NOTHING:
         {
             Mode_TOOL = DRILL_NOTHING;
             break;
         }
+
     }
 }
 
