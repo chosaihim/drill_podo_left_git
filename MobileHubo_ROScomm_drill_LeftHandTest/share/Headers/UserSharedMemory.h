@@ -191,6 +191,8 @@ typedef struct _USER_SHM_
     float           odom_data[6];
     float           vel_cmd[2];
 
+    double          al_ref[43];
+
 } USER_SHM, *pUSER_SHM;
 
 

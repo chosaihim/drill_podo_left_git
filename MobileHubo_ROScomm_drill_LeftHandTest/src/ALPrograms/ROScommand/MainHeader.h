@@ -206,6 +206,8 @@ bool RIGHT_isFirst = true;
 bool LEFT_isFirst = false;
 bool Joystick_flag = false;
 void ResetJOY();
+
+
 void CheckArguments(int argc, char *argv[]){
     int opt = 0;
     int podoNum = -1;
@@ -266,6 +268,12 @@ double ROS_Handz = 0;
 double ROS_Basex = 0;
 double ROS_Basey = 0;
 double ROS_Basez = 0;
+
+
+//FLAG
+int command_FLAG = false;
+int command_num  = 0;
+
 
 typedef struct{
 

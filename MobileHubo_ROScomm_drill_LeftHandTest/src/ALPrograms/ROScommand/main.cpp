@@ -697,6 +697,27 @@ void RBTaskThread(void *)
             joint->SetJointRefAngle(LWP,  WBmotion->Q_filt_34x1[idLWP]*R2D);
             joint->SetJointRefAngle(LWY2, WBmotion->Q_filt_34x1[idLWY2]*R2D);
 
+            //save in SHD MEM
+            {
+                userData->al_ref[WST]  = WBmotion->Q_filt_34x1[idWST] *R2D;
+
+                userData->al_ref[RSP]  = WBmotion->Q_filt_34x1[idRSP] *R2D;
+                userData->al_ref[RSR]  = WBmotion->Q_filt_34x1[idRSR] *R2D-OFFSET_RSR;
+                userData->al_ref[RSY]  = WBmotion->Q_filt_34x1[idRSY] *R2D;
+                userData->al_ref[REB]  = WBmotion->Q_filt_34x1[idREB] *R2D-OFFSET_ELB;
+                userData->al_ref[RWY]  = WBmotion->Q_filt_34x1[idRWY] *R2D;
+                userData->al_ref[RWP]  = WBmotion->Q_filt_34x1[idRWP] *R2D;
+                userData->al_ref[RWY2] = WBmotion->Q_filt_34x1[idRWY2]*R2D;
+
+                userData->al_ref[LSP]  = WBmotion->Q_filt_34x1[idLSP] *R2D;
+                userData->al_ref[LSR]  = WBmotion->Q_filt_34x1[idLSR] *R2D-OFFSET_LSR;
+                userData->al_ref[LSY]  = WBmotion->Q_filt_34x1[idLSY] *R2D;
+                userData->al_ref[LEB]  = WBmotion->Q_filt_34x1[idLEB] *R2D-OFFSET_ELB;
+                userData->al_ref[LWY]  = WBmotion->Q_filt_34x1[idLWY] *R2D;
+                userData->al_ref[LWP]  = WBmotion->Q_filt_34x1[idLWP] *R2D;
+                userData->al_ref[LWY2] = WBmotion->Q_filt_34x1[idLWY2]*R2D;
+            }
+
             if(!CheckMotionOwned())
                 WB_FLAG = false;
         }
@@ -724,7 +745,8 @@ void RBTaskThread(void *)
                 std::cout << "Failed to open al_ref.txt" << std::endl;
             else{
                 for(int joint_num = RHY; joint_num <= LHAND; joint_num++){
-                    fprintf(daemonFile,"%f, ",sharedSEN->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentReference);
+                    fprintf(daemonFile,"%f, ",sharedSEN->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentPosition);
+//                    fprintf(daemonFile,"%f, ",sharedSEN->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentReference);
                     fprintf(alFile,"%f, ",sharedREF->JointReference[PODO_NO][MC_ID_CH_Pairs[joint_num].id][MC_ID_CH_Pairs[joint_num].ch]);
 //                    fprintf(daemonFile,"%f, ",sharedData->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentReference);
     //                fprintf(daemonFile,"%f, ",sharedData->ENCODER[MC_GetID(joint_num)][MC_GetCH(joint_num)].CurrentPosition);
@@ -734,6 +756,61 @@ void RBTaskThread(void *)
             }
             fclose(daemonFile);
             fclose(alFile);
+
+            //FILE WRITING_gogoReference
+            FILE *gogoFile = NULL;
+            gogoFile = fopen("/home/rainbow/Desktop/gogo_ref.txt","a");
+            if((gogoFile == NULL))
+                std::cout << "Failed to open gogo_ref.txt" << std::endl;
+            else{
+                for(int i=RHY; i<=LWP; i++)
+                {
+                    fprintf(gogoFile,"%lf, ", userData->al_ref[i]);
+                }
+                fprintf(gogoFile,"\n");
+            }
+            fclose(gogoFile);
+
+            //FILE WRITING_FTSensor
+            FILE *FTFile = NULL;
+            FTFile = fopen("/home/rainbow/Desktop/FT_sensor.txt","a");
+            if((FTFile == NULL))
+                std::cout << "Failed to open FT_sensor.txt" << std::endl;
+            else{
+                for(int i=0; i<=3; i++)
+                {
+                    //0:RAFT, 1:LAFT, ...
+                    fprintf(FTFile,"%lf, %lf, %lf, %lf, %lf, %lf, ", sharedSEN->FT[i].Fx, sharedSEN->FT[i].Fy, sharedSEN->FT[i].Fz,sharedSEN->FT[i].Mx,sharedSEN->FT[i].My,sharedSEN->FT[i].Mz);
+                }
+                fprintf(FTFile,"\n");
+            }
+            fclose(FTFile);
+
+
+            //FILE CommandInput
+            FILE *CommandFile = NULL;
+            CommandFile = fopen("/home/rainbow/Desktop/commandIn.txt","a");
+            if((CommandFile == NULL))
+                std::cout << "Failed to open commandIn.txt" << std::endl;
+            else{
+                fprintf(CommandFile,"%d, %d\n", command_FLAG, command_num);
+                command_FLAG = false;
+            }
+            fclose(CommandFile);
+
+            //FILE EndEffector
+            FILE *EEFile = NULL;
+            EEFile = fopen("/home/rainbow/Desktop/endEffector.txt","a");
+            if((EEFile == NULL))
+                std::cout << "Failed to open endEffector.txt" << std::endl;
+            else{
+                for(int i = 0; i < 3; i++)
+                    fprintf(EEFile,"%lf, ", WBmotion->pRH_3x1[i]);
+                for(int i = 0; i < 3; i++)
+                    fprintf(EEFile,"%lf, ", WBmotion->pLH_3x1[i]);
+                fprintf(EEFile,"\n");
+            }
+            fclose(EEFile);
 
         }
 
@@ -993,6 +1070,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "HOLD_OPEN";
 
+
+            command_num  = DRILL_HOLD_APPROACH;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.hold_Handx;// 0.393229;
             RHpos[1] = drill_in.hold_Handy;//-0.246403;
             RHpos[2] = drill_in.hold_Handz;// 0.298698;
@@ -1029,6 +1110,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_HOLD_GRASP";
 
+
+            command_num  = DRILL_HOLD_GRASP;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.hold_Handx + 0.1;
             RHpos[1] = drill_in.hold_Handy;
             RHpos[2] = drill_in.hold_Handz;
@@ -1042,6 +1127,10 @@ void ToolTask_Supervisor()
         case DRILL_HOLD_GRASP_CLOSE:
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_HOLD_GRASP";
+
+
+            command_num  = DRILL_HOLD_GRASP_CLOSE;
+            command_FLAG = true;
 
             //GRIPPER CLOSE
             if(FLAG_Gripper != true)
@@ -1069,6 +1158,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_BRING";
 
+
+            command_num  = DRILL_HOLD_BRING;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.bring_Handx;
             RHpos[1] = drill_in.bring_Handy;
             RHpos[2] = drill_in.bring_Handz;
@@ -1081,6 +1174,10 @@ void ToolTask_Supervisor()
         case DRILL_DRILL_READY:
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_READY";
+
+
+            command_num  = DRILL_DRILL_READY;
+            command_FLAG = true;
 
             RHpos[0] = drill_in.ready_Handx;
             RHpos[1] = drill_in.ready_Handy;
@@ -1101,6 +1198,9 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_APPROACH";
 
+            command_num  = DRILL_DRILL_APPROACH;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.approach_Handx;
             RHpos[1] = drill_in.approach_Handy;
             RHpos[2] = drill_in.approach_Handz;
@@ -1117,6 +1217,10 @@ void ToolTask_Supervisor()
         case DRILL_DRILL_DOWN:
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_DRILLING";
+
+
+            command_num  = DRILL_DRILL_DOWN;
+            command_FLAG = true;
 
             RHpos[0] = drill_in.drilling_Handx;
             RHpos[1] = drill_in.drilling_Handy;
@@ -1135,6 +1239,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_FINISH";
 
+
+            command_num  = DRILL_DRILL_UP;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.finish_Handx;  // 0.4;
             RHpos[1] = drill_in.finish_Handy;  //-0.246403;
             RHpos[2] = drill_in.finish_Handz;  //-0.1;
@@ -1147,6 +1255,10 @@ void ToolTask_Supervisor()
         case DRILL_PUT_LIFT:
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_LIFT";
+
+
+            command_num  = DRILL_PUT_LIFT;
+            command_FLAG = true;
 
             RHpos[0] = drill_in.lift_Handx;    // 0.293229;
             RHpos[1] = drill_in.lift_Handy;    //-0.246403;
@@ -1168,6 +1280,11 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_PUT";
 
+
+            command_num  = DRILL_PUT_PUT;
+            command_FLAG = true;
+
+
             RHpos[0] = drill_in.put_Handx;// 0.393229; //WBmotion->pRH_3x1[0] + 0.1;    //drill_in.lift_Handx + 0.1;   //drill_in.put_Handx;  // 0.393229;
             RHpos[1] = drill_in.put_Handy;//-0.246403; //WBmotion->pRH_3x1[1];          //drill_in.lift_Handy;         //drill_in.put_Handy;  //-0.246403;
             RHpos[2] = drill_in.put_Handz;// 0.298698; //WBmotion->pRH_3x1[2] + 0.05;   //drill_in.lift_Handz + 0.05;  //drill_in.put_Handz;  // 0.298698;
@@ -1181,6 +1298,10 @@ void ToolTask_Supervisor()
         case DRILL_PUT_PUT_OPEN:
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_PUT_OPEN";
+
+
+            command_num  = DRILL_PUT_PUT_OPEN;
+            command_FLAG = true;
 
             //GRIPPER OPEN
             if(FLAG_Gripper != true)
@@ -1209,6 +1330,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_WKRD";
 
+
+            command_num  = DRILL_PUT_PRE_WKRD;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.put_Handx - 0.15;
             RHpos[1] = drill_in.put_Handy;
             RHpos[2] = drill_in.put_Handz;
@@ -1224,6 +1349,9 @@ void ToolTask_Supervisor()
         case DRILL_PUT_WKRD:
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_WKRD";
+
+            command_num  = DRILL_PUT_WKRD;
+            command_FLAG = true;
 
             RHpos[0] =  drill_in.WKRD_Handx;
             RHpos[1] =  drill_in.WKRD_Handy;
@@ -1254,6 +1382,9 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_DRILL_STOP";
 
+            command_num  = DRILL_STOP;
+            command_FLAG = true;
+
             Mode_TOOL = DRILL_NOTHING;
             break;
         }
@@ -1261,6 +1392,9 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "GUI_GETCOM";
 
+
+            command_num  = DRILL_GETCOM;
+            command_FLAG = true;
 
             cout << "pRH_3x1[0] = " << WBmotion->pRH_3x1[0] << endl;
             cout << "pRH_3x1[1] = " << WBmotion->pRH_3x1[1] << endl;
@@ -1278,6 +1412,10 @@ void ToolTask_Supervisor()
         case LEFT_HANDUP:
         {
             FILE_LOG(logSUCCESS) << "LEFT_HANDUP";
+
+
+            command_num  = LEFT_HANDUP;
+            command_FLAG = true;
 
             LHpos[0] = drill_in.leftHandup_Handx;
             LHpos[1] = drill_in.leftHandup_Handy;
@@ -1298,6 +1436,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "LEFT_APPROACH";
 
+
+            command_num  = LEFT_APPROACH;
+            command_FLAG = true;
+
             LHpos[0] = drill_in.leftApproach_Handx; //0.583407;    //
             LHpos[1] = drill_in.leftApproach_Handy;
             LHpos[2] = drill_in.leftApproach_Handz; //0.595882;    //
@@ -1316,6 +1458,9 @@ void ToolTask_Supervisor()
         case LEFT_PUSH:
         {
             FILE_LOG(logSUCCESS) << "LEFT_PUSH";
+
+            command_num  = LEFT_PUSH;
+            command_FLAG = true;
 
             LHpos[0] = drill_in.leftPush_Handx;
             LHpos[1] = drill_in.leftPush_Handy;
@@ -1384,6 +1529,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "LEFT_PULL";
 
+
+            command_num  = LEFT_PULL;
+            command_FLAG = true;
+
             LHpos[0] = drill_in.leftPull_Handx;
             LHpos[1] = drill_in.leftPull_Handy;
             LHpos[2] = drill_in.leftPull_Handz;
@@ -1401,6 +1550,10 @@ void ToolTask_Supervisor()
         case LEFT_RELEASE:
         {
             FILE_LOG(logSUCCESS) << "LEFT_RELEASE";
+
+
+            command_num  = LEFT_RELEASE;
+            command_FLAG = true;
 
             LHpos[0] = drill_in.leftHandBack_Handx;
             LHpos[1] = drill_in.leftHandBack_Handy;
@@ -1520,6 +1673,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "RIGHT_HANDUP";
 
+
+            command_num  = RIGHT_HANDUP;
+            command_FLAG = true;
+
             RHpos[0] = drill_in.Handup_Handx;
             RHpos[1] = drill_in.Handup_Handy;
             RHpos[2] = drill_in.Handup_Handz;
@@ -1545,6 +1702,9 @@ void ToolTask_Supervisor()
         case RIGHT_APPROACH:
         {
             FILE_LOG(logSUCCESS) << "RIGHT_APPROACH";
+
+            command_num  = RIGHT_APPROACH;
+            command_FLAG = true;
 
             RHpos[0] = drill_in.Approach_Handx;
             RHpos[1] = drill_in.Approach_Handy;
@@ -1591,6 +1751,10 @@ void ToolTask_Supervisor()
         case RIGHT_PUSH:
         {
             FILE_LOG(logSUCCESS) << "RIGHT_PUSH";
+
+            command_num  = RIGHT_PUSH;
+            command_FLAG = true;
+
 
             RHpos[0] = drill_in.Push_Handx;
             RHpos[1] = drill_in.Push_Handy;
@@ -1675,6 +1839,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "RIGHT_PULL";
 
+
+            command_num  = RIGHT_PULL;
+            command_FLAG = true;
+
             //GRIPPER OPEN
             if(FLAG_Gripper != true)
             {
@@ -1717,6 +1885,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "RIGHT_RELEASE";
 
+
+            command_num  = RIGHT_RELEASE;
+            command_FLAG = true;
+
             //GRIPPER CLOSE
             if(FLAG_Gripper != true)
             {
@@ -1753,6 +1925,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << ">>> ANGLE_TEST" ;
 
+
+            command_num  = ANGLE_TEST;
+            command_FLAG = true;
+
             sharedCMD->CommandAccept[PODO_NO] = true;
 
             usleep(500*1000);
@@ -1768,6 +1944,10 @@ void ToolTask_Supervisor()
         case SET_ANGLE_TEST:
         {
             FILE_LOG(logSUCCESS) << ">>> SET_ANGLE_TEST" ;
+
+
+            command_num  = SET_ANGLE_TEST;
+            command_FLAG = true;
 
             //HAND MOTION
 
@@ -1811,6 +1991,10 @@ void ToolTask_Supervisor()
         case GRIPPER_TEST:
         {
             FILE_LOG(logSUCCESS) << ">>> GRIPPER_TEST" ;
+
+
+            command_num  = GRIPPER_TEST;
+            command_FLAG = true;
 
             RHpos[0] = drill_in.Handup_Handx;
             RHpos[1] = drill_in.Handup_Handy;
@@ -1902,6 +2086,9 @@ void ToolTask_Supervisor()
             FILE_LOG(logSUCCESS) << "PUSH_SEQ";
             Mode_cont = PUSH_SEQ;
 
+            command_num  = PUSH_SEQ;
+            command_FLAG = true;
+
             cout << "ROS (x,y,z) = (" << ROS_Handx << ", " << ROS_Handy << ", " << ROS_Handz << ")" << endl;
 
             if(ROS_Handx == 0 && ROS_Handy == 0 && ROS_Handz == 0)
@@ -1944,6 +2131,10 @@ void ToolTask_Supervisor()
         {
             FILE_LOG(logSUCCESS) << "PULL_SEQ";
             Mode_cont = PULL_SEQ;
+
+
+            command_num  = PULL_SEQ;
+            command_FLAG = true;
 
             //Mode_TOOL = DRILL_NOTHING;
             SetWaitTime(PULL_SEQ, 0.0);
