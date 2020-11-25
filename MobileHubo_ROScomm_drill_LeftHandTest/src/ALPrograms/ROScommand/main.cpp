@@ -1066,7 +1066,7 @@ void ToolTask_Supervisor()
             }
             break;
         }
-        case DRILL_HOLD_APPROACH:
+        /*case DRILL_HOLD_APPROACH:
         {
             FILE_LOG(logSUCCESS) << "HOLD_OPEN";
 
@@ -1470,28 +1470,6 @@ void ToolTask_Supervisor()
             SetOriHand(LHori,-90.0,0.0);
             WBmotion->addLHOriInfo(LHori, drill_in.leftPush_time);
 
-//            WBmotion->addLHPosInfo(LHpos[0], LHpos[1], LHpos[2], drill_in.leftPush_time);
-/*
-            double pushTime_count = drill_in.leftPush_time * 200;
-            double x0 = drill_in.leftApproach_Handx;
-            double z0 = drill_in.leftApproach_Handz;
-            double x = 0, z =0;
-            double r = 0.10;
-            double th   = 0;
-            double d_th = (95 * D2R)/(pushTime_count);
-
-            while(pushTime_count--)
-            {
-                //start from bottom
-                th = th + d_th;
-                x  = x0 + r * sin(th);
-                z  = z0 + (r - r * cos(th));
-
-                WBmotion->addLHPosInfo(x, LHpos[1], z, 0.005);
-            }
-            cout << "x = " << x << ", z = " << z << endl;
-*/
-
             //variables
             //Time
             double pushTime_count = drill_in.leftPush_time * 200;
@@ -1565,110 +1543,8 @@ void ToolTask_Supervisor()
 
             break;
         }
- /*      //RIGHT HAND YAW 0
-        case RIGHT_HANDUP:
-        {
-            FILE_LOG(logSUCCESS) << "RIGHT_HANDUP";
+        */
 
-            RHpos[0] = drill_in.Handup_Handx;
-            RHpos[1] = drill_in.Handup_Handy;
-            RHpos[2] = drill_in.Handup_Handz;
-
-            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Handup_time);
-
-            WBmotion->addLElbPosInfo(5.,drill_in.Handup_time);
-
-            Mode_TOOL = DRILL_NOTHING;
-
-            break;
-        }
-        case RIGHT_APPROACH:
-        {
-            FILE_LOG(logSUCCESS) << "RIGHT_APPROACH";
-
-            RHpos[0] = drill_in.Approach_Handx;
-            RHpos[1] = drill_in.Approach_Handy;
-            RHpos[2] = drill_in.Approach_Handz;
-
-            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Approach_time);
-
-            SetOriHand(RHori,-90.0,0.0);
-            WBmotion->addRHOriInfo(RHori, drill_in.Approach_time);
-
-            Mode_TOOL = DRILL_NOTHING;
-
-            break;
-        }
-        case RIGHT_PUSH:
-        {
-            FILE_LOG(logSUCCESS) << "RIGHT_PUSH";
-
-            SetOriHand(RHori,-90.0,0.0);
-            WBmotion->addRHOriInfo(RHori, drill_in.Push_time);
-
-
-            //variables
-            //Time
-            double pushTime_count = drill_in.Push_time * 200;
-
-            //angle
-            double th_start = (180 - 15) * D2R;
-            double th_end   = (180 + 80) * D2R;
-            double th       = th_start;
-            double d_th     = ((th_end - th_start))/(pushTime_count);
-
-            //xz plane
-            double x  = 0;
-            double z  = 0;
-            double r  = 0.10;
-            double x0 = drill_in.Approach_Handx - r * cos(th);  //0.68;
-            double z0 = drill_in.Approach_Handz - r * sin(th);  //0.57;
-
-            while(pushTime_count--)
-            {
-                //start from bottom
-                th = th + d_th;
-                x  = x0 + r * cos(th);
-                z  = z0 + r * sin(th);
-
-                WBmotion->addRHPosInfo(x, RHpos[1], z, 0.005);
-            }
-
-            cout << "(x,z) = (" << x << ", " << z << ")" << endl;
-
-            Mode_TOOL = DRILL_NOTHING;
-
-            break;
-        }
-        case RIGHT_PULL:
-        {
-            FILE_LOG(logSUCCESS) << "RIGHT_PULL";
-
-            RHpos[0] = drill_in.Pull_Handx;
-            RHpos[1] = drill_in.Pull_Handy;
-            RHpos[2] = drill_in.Pull_Handz;
-
-            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.Pull_time);
-
-            Mode_TOOL = DRILL_NOTHING;
-
-            break;
-        }
-        case RIGHT_RELEASE:
-        {
-            FILE_LOG(logSUCCESS) << "RIGHT_RELEASE";
-
-            RHpos[0] = drill_in.HandBack_Handx;
-            RHpos[1] = drill_in.HandBack_Handy;
-            RHpos[2] = drill_in.HandBack_Handz;
-
-            WBmotion->addRHPosInfo(RHpos[0], RHpos[1], RHpos[2], drill_in.HandBack_time);
-
-            Mode_TOOL = DRILL_NOTHING;
-
-            break;
-        }
-*/
         case RIGHT_HANDUP:
         {
             FILE_LOG(logSUCCESS) << "RIGHT_HANDUP";
